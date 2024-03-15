@@ -7,7 +7,7 @@ export const buttonColorMap = {
     color: ${colors.white};
   `,
   success: css`
-    background-color: ${colors.green};
+    background-color: ${colors.teal900};
     color: ${colors.white};
   `,
   error: css`
@@ -24,8 +24,8 @@ export const buttonWeakMap = {
   `,
   success: css`
     background-color: ${colors.white};
-    color: ${colors.green};
-    border: 1px solid ${colors.green};
+    color: ${colors.teal900};
+    border: 1px solid ${colors.teal900};
   `,
   error: css`
     background-color: ${colors.white};

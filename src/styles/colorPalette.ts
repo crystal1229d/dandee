@@ -18,6 +18,7 @@ export const colorPalette = css`
     --blue: rgba(54, 143, 255, 1);
     --blue60: rgba(54, 143, 255, 0.06);
     --blue100: rgba(54, 143, 255, 0.1);
+    --blue200: rgba(54, 143, 255, 0.2);
     --blue500: rgba(54, 143, 255, 0.5);
     --blue980: rgba(54, 143, 255, 0.98);
     --red: rgba(253, 46, 105, 1);
@@ -50,6 +51,7 @@ export const colors = {
   blue: 'var(--blue)',
   blue60: 'var(--blue60)',
   blue100: 'var(--blue100)',
+  blue200: 'var(--blue200)',
   blue500: 'var(--blue500)',
   blue980: 'var(--blue980)',
   red: 'var(--red)',
