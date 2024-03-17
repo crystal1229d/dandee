@@ -1,12 +1,14 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import AuthProvider from '@components/auth/AuthProvider'
+import AuthRoute from './components/auth/AuthRoute'
+
 import Navbar from '@shared/Navbar'
 import CheckListPage from '@pages/checklist'
 import HomePage from '@pages/Home'
 import SigninPage from '@pages/Signin'
 import MyPage from '@pages/My'
-import AuthRoute from './components/auth/AuthRoute'
+import DevPage from '@pages/Dev'
 
 function App() {
   return (
@@ -39,6 +41,7 @@ function App() {
               </AuthRoute>
             }
           />
+          <Route path="/dev" element={<DevPage />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

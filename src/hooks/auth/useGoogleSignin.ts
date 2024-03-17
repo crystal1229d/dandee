@@ -5,7 +5,7 @@ import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'
 import { collection, doc, setDoc, getDoc } from 'firebase/firestore'
 import { FirebaseError } from 'firebase/app'
 
-import { auth, store } from '@lib/firebase'
+import { auth, db } from '@lib/firebase'
 import { COLLECTIONS } from '@constants'
 
 function useGoogleSignin() {
@@ -18,7 +18,7 @@ function useGoogleSignin() {
       const { user } = await signInWithPopup(auth, provider)
 
       const userSnapshot = await getDoc(
-        doc(collection(store, COLLECTIONS.USER), user.uid),
+        doc(collection(db, COLLECTIONS.USER), user.uid),
       )
 
       // 이미 가입한 유저
@@ -33,7 +33,7 @@ function useGoogleSignin() {
         }
 
         await setDoc(
-          doc(collection(store, COLLECTIONS.USER), user.uid),
+          doc(collection(db, COLLECTIONS.USER), user.uid),
           새로운유저,
         )
 
