@@ -4,8 +4,9 @@ import AuthProvider from '@components/auth/AuthProvider'
 import AuthRoute from './components/auth/AuthRoute'
 
 import Navbar from '@shared/Navbar'
-import CheckListPage from '@pages/checklist'
 import HomePage from '@pages/Home'
+import CheckListPage from '@pages/checklist'
+import ChecklistsPage from '@pages/Checklists'
 import SigninPage from '@pages/Signin'
 import MyPage from '@pages/My'
 import DevPage from '@pages/Dev'
@@ -22,6 +23,14 @@ function App() {
             element={
               <AuthRoute>
                 <CheckListPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/checklists"
+            element={
+              <AuthRoute>
+                <ChecklistsPage />
               </AuthRoute>
             }
           />
