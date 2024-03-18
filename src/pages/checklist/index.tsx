@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom'
+import { css } from '@emotion/react'
 
 import Title from '@shared/Title'
 import Flex from '@shared/Flex'
 import ContentsButtonBar from '@shared/ContentsButtonBar'
 import Checkbox from '@shared/Checkbox'
 import Spacing from '@shared/Spacing'
-import { css } from '@emotion/react'
+import Accordion from '@shared/Accordion'
 
-import { spacing } from '@styles/spacing'
 import { colors } from '@styles/colorPalette'
-import Accordion from '@/components/shared/Accordion'
+import { spacing } from '@/styles/sharedStyles'
 
 function CheckListPage() {
   return (

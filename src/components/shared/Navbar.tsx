@@ -7,8 +7,7 @@ import useUser from '@hooks/auth/useUser'
 
 import Flex from '@shared/Flex'
 import { colors } from '@styles/colorPalette'
-import { zIndex } from '@styles/zIndex'
-import { spacing } from '@styles/spacing'
+import { spacing, zIndex } from '@/styles/sharedStyles'
 
 function StyledLink({
   to,
@@ -18,7 +17,7 @@ function StyledLink({
   children: React.ReactNode
 }) {
   const location = useLocation()
-  const isActive = location.pathname === to
+  const isActive = location.pathname.includes(to)
 
   return (
     <Link to={to} css={linkStyle(isActive)}>

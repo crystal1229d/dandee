@@ -113,6 +113,10 @@ export default css`
   }
   body {
     line-height: 1;
+    -ms-overflow-style: none;
+    ::-webkit-scrollbar {
+      display: none;
+    }
   }
   ol,
   ul {

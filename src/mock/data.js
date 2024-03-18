@@ -1,13 +1,45 @@
 export const CHECKLISTS = [
   {
     name: '여행 준비물',
-    type: 'template',
+    type: 'DEFAULT_TEMPLATE',
     createdAt: '2023-10-23T00:00:00+09:00',
+    usedAt: '2023-10-23T00:00:00+09:00',
+    userId: 'r1TAHIKorqPVhXAfoJRjuwC2FD33',
   },
   {
     name: '2024 호주 여행 준비물',
-    type: 'template',
-    createdAt: '2024-02-23T00:00:00+09:00',
+    type: 'CUSTOM_TEMPLATE',
+    createdAt: '2023-10-23T00:00:00+09:00',
+    usedAt: '2024-03-15T00:00:00+09:00',
+    userId: 'r1TAHIKorqPVhXAfoJRjuwC2FD33',
+  },
+  {
+    name: '제주여행',
+    type: 'CUSTOM_TEMPLATE',
+    createdAt: '2023-10-23T00:00:00+09:00',
+    usedAt: '2023-11-15T00:00:00+09:00',
+    userId: 'r1TAHIKorqPVhXAfoJRjuwC2FD33',
+  },
+  {
+    name: '2024 일본 온천여행',
+    type: 'IN_USE',
+    createdAt: '2024-01-10T00:00:00+09:00',
+    usedAt: '2024-01-15T00:00:00+09:00',
+    userId: 'r1TAHIKorqPVhXAfoJRjuwC2FD33',
+  },
+  {
+    name: '우정여행',
+    type: 'SHARE_TEMPLATE',
+    createdAt: '2023-03-23T00:00:00+09:00',
+    usedAt: '2023-03-23T00:00:00+09:00',
+    userId: 'r1TAHIKorqPVhXAfoJRjuwC2FD33',
+  },
+  {
+    name: '우정여행',
+    type: 'SHARE_TEMPLATE',
+    createdAt: '2023-03-23T00:00:00+09:00',
+    usedAt: '2023-03-23T00:00:00+09:00',
+    userId: '12345',
   },
 ]
 
