@@ -24,6 +24,7 @@ export const colorPalette = css`
     --red: rgba(253, 46, 105, 1);
     --red100: rgba(253, 46, 105, 0.1);
     --red50: rgba(253, 46, 105, 0.05);
+    --red700: rgba(253, 46, 105, 0.7);
     --purple: rgba(151, 95, 254, 1);
     --purple100: rgba(151, 95, 254, 0.1);
     --white: rgba(255, 255, 255, 1);
@@ -57,6 +58,7 @@ export const colors = {
   red: 'var(--red)',
   red100: 'var(--red100)',
   red50: 'var(--red50)',
+  red700: 'var(--red700)',
   purple: 'var(--purple)',
   purple100: 'var(--purple100)',
   white: 'var(--white)',

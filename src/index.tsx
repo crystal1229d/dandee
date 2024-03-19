@@ -1,12 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RecoilRoot } from 'recoil'
+import { QueryClient, QueryClientProvider } from 'react-query'
 import reportWebVitals from './reportWebVitals'
 
 import App from './App'
+
 import { Global } from '@emotion/react'
 import globalStyles from '@styles/globalStyles'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { DialogContextProvider } from '@contexts/DialogContext'
 
 const client = new QueryClient({
   defaultOptions: {
@@ -22,7 +24,9 @@ root.render(
     <Global styles={globalStyles} />
     <RecoilRoot>
       <QueryClientProvider client={client}>
-        <App />
+        <DialogContextProvider>
+          <App />
+        </DialogContextProvider>
       </QueryClientProvider>
     </RecoilRoot>
   </React.StrictMode>,

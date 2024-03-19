@@ -1,22 +1,43 @@
 import { css } from '@emotion/react'
+import { Link } from 'react-router-dom'
 import { format } from 'date-fns'
 
+import { TAGS } from '@constants'
+import { removeChecklist, updateChecklist } from '@remote/checklist'
 import { Checklist } from '@models/checklist'
+
+import { spacing } from '@styles/sharedStyles'
 import { colors } from '@styles/colorPalette'
+import { useDialogContext } from '@contexts/DialogContext'
 import Flex from '@shared/Flex'
 import Text from '@shared/Text'
 import Tag from '@shared/Tag'
 import Spacing from '@shared/Spacing'
-import { TAGS } from '@constants'
-
-import { HiOutlineTrash } from 'react-icons/hi2'
-import { size, spacing } from '@styles/sharedStyles'
+import Button from '@shared/Button'
 
 function ChecklistCard({ checklist }: { checklist: Checklist }) {
-  const { name, type, createdAt, usedAt } = checklist
+  const { id, name, type, inUse, createdAt, usedAt } = checklist
+  const { open } = useDialogContext()
 
-  const handleDelete = () => {
-    console.log('delete')
+  const handleClickUse = () => {
+    open({
+      title: `"${name}" 를 ${inUse ? '사용해제' : '사용'}하시겠습니까?`,
+      onConfirmClick: () => {
+        updateChecklist({
+          checklistId: id,
+          newChecklist: { ...checklist, inUse: !inUse },
+        })
+      },
+    })
+  }
+
+  const handleClickDelete = () => {
+    open({
+      title: `"${name}" 를 삭제하시겠습니까?`,
+      onConfirmClick: () => {
+        removeChecklist({ checklistId: id })
+      },
+    })
   }
 
   const tagComponent = () => {
@@ -27,7 +48,7 @@ function ChecklistCard({ checklist }: { checklist: Checklist }) {
     const { label, tagStyle } = TAGS[type]
 
     return (
-      <div>
+      <Flex gap={6}>
         <Tag
           color={tagStyle.fontColor}
           backgroundColor={tagStyle.backgroundColor}
@@ -35,30 +56,48 @@ function ChecklistCard({ checklist }: { checklist: Checklist }) {
           {label}
         </Tag>
         <Spacing size={8} />
-      </div>
+        {inUse && (
+          <Tag
+            color={TAGS['IN_USE'].tagStyle.fontColor}
+            backgroundColor={TAGS['IN_USE'].tagStyle.backgroundColor}
+          >
+            {TAGS['IN_USE'].label}
+          </Tag>
+        )}
+      </Flex>
     )
   }
 
   return (
-    <Flex dir="column" justify="space-between" css={containerStyle}>
-      <Flex dir="column">
-        <Text typography="t4">{name}</Text>
-        <Spacing size={8} />
-        {tagComponent()}
+    <Flex dir="column" css={containerStyle}>
+      {/* 템플릿 정보 */}
+      <Link to="/checklist/edit">
+        <Flex dir="column" gap={30}>
+          <Flex dir="column">
+            <Text typography="t4">{name}</Text>
+            <Spacing size={8} />
+            {tagComponent()}
+          </Flex>
+          <Flex dir="column">
+            <Text typography="t7" color="gray400">
+              생성 :{format(createdAt, 'yyyy-MM-dd')}
+            </Text>
+            <Text typography="t7" color="gray400">
+              마지막 사용 : {format(usedAt, 'yyyy-MM-dd')}
+            </Text>
+          </Flex>
+        </Flex>
+      </Link>
+
+      {/* 버튼그룹 */}
+      <Flex dir="column" gap={6} css={buttonGroupStyle}>
+        <Button css={buttonStyle} onClick={handleClickUse}>
+          {inUse ? '사용해제' : '사용하기'}
+        </Button>
+        <Button css={buttonStyle} onClick={handleClickDelete}>
+          삭제하기
+        </Button>
       </Flex>
-      <Flex dir="column">
-        <Text typography="t7" color="gray400">
-          생성 :{format(createdAt, 'yyyy-MM-dd')}
-        </Text>
-        <Text typography="t7" color="gray400">
-          마지막 사용 : {format(usedAt, 'yyyy-MM-dd')}
-        </Text>
-      </Flex>
-      <HiOutlineTrash
-        fontSize={size.iconSize}
-        css={useButtonStyle}
-        onClick={handleDelete}
-      />
     </Flex>
   )
 }
@@ -78,10 +117,20 @@ const containerStyle = css`
   }
 `
 
-const useButtonStyle = css`
+const buttonGroupStyle = css`
   position: absolute;
   right: 50px;
-  color: ${colors.gray800};
+`
+
+const buttonStyle = css`
+  border: 1px solid ${colors.gray200};
+  background-color: ${colors.white};
+  color: ${colors.gray600};
+  font-weight: 400;
+
+  &:hover {
+    background-color: ${colors.gray50};
+  }
 `
 
 export default ChecklistCard

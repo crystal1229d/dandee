@@ -1,11 +1,19 @@
-import { useInfiniteQuery } from 'react-query'
+import { useInfiniteQuery, useMutation, useQueryClient } from 'react-query'
 
 import useUser from '@hooks/auth/useUser'
-import { getChecklists } from '@remote/checklist'
+import {
+  getChecklists,
+  removeChecklist,
+  updateChecklist,
+} from '@remote/checklist'
 import { useCallback } from 'react'
+import { Checklist } from '@/models/checklist'
 
 function useChecklists() {
   const user = useUser()
+  const client = useQueryClient()
+
+  // 조회
   const {
     data,
     hasNextPage = false,
@@ -16,6 +24,7 @@ function useChecklists() {
     ({ pageParam }) =>
       getChecklists({ userId: user?.uid as string, pageParam }),
     {
+      enabled: user != null,
       getNextPageParam: (snapshot) => {
         return snapshot.lastVisible
       },
@@ -32,7 +41,48 @@ function useChecklists() {
 
   const checklists = data?.pages.map(({ checklists }) => checklists).flat()
 
-  return { data: checklists, loadMore, isFetching, hasNextPage }
+  // 생성
+  const create = () => {}
+
+  // 수정
+  const { mutate: update } = useMutation(
+    ({
+      checklistId,
+      newData,
+    }: {
+      checklistId: string
+      newData: Partial<Checklist>
+    }) => {
+      return updateChecklist({ checklistId, newChecklist: newData })
+    },
+    {
+      onSuccess: () => {
+        client.invalidateQueries(['checklists', user?.uid])
+      },
+    },
+  )
+
+  // 삭제
+  const { mutate: remove } = useMutation(
+    ({ checklistId }: { checklistId: string }) => {
+      return removeChecklist({ checklistId })
+    },
+    {
+      onSuccess: () => {
+        client.invalidateQueries(['checklists', user?.uid])
+      },
+    },
+  )
+
+  return {
+    data: checklists,
+    loadMore,
+    isFetching,
+    hasNextPage,
+    create,
+    update,
+    remove,
+  }
 }
 
 // function useChecklists() {

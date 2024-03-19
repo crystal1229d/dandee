@@ -12,6 +12,7 @@ import {
   query,
   QuerySnapshot,
   startAfter,
+  updateDoc,
   where,
 } from 'firebase/firestore'
 
@@ -57,6 +58,22 @@ export async function getChecklists({
   }
 }
 
+export async function createChecklist(checklist: Omit<Checklist, 'id'>) {
+  //
+}
+
+export async function updateChecklist({
+  checklistId,
+  newChecklist,
+}: {
+  checklistId: string
+  newChecklist: Partial<Checklist>
+}) {
+  // 체크리스트 수정 : 카테고리, 아이템 수정 X / 체크리스트 이름 또는 사용여부만 변경 가능
+  const checklistRef = doc(collection(db, COLLECTIONS.CHECKLIST), checklistId)
+  return updateDoc(checklistRef, newChecklist)
+}
+
 export async function removeChecklist({
   checklistId,
 }: {
@@ -68,10 +85,8 @@ export async function removeChecklist({
 }
 
 export async function getChecklistWithCategoryAndItem({
-  userId,
   checklistId,
 }: {
-  userId: string
   checklistId: string
 }) {
   const checklistSnapshot = await getDoc(

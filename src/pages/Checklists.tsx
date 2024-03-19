@@ -11,6 +11,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { CiCirclePlus } from 'react-icons/ci'
 import { size, spacing } from '@/styles/sharedStyles'
+import { Link } from 'react-router-dom'
 
 function ChecklistsPage() {
   const { data: checklists, hasNextPage, loadMore } = useChecklists()
@@ -22,7 +23,9 @@ function ChecklistsPage() {
         subTitle="체크리스트를 편집하거나 불러올 수 있어요"
       />
       <Flex align="center" justify="center" css={actionButtonContainer}>
-        <CiCirclePlus size={size.iconSize} color={colors.gray800} />
+        <Link to="/checklist/new">
+          <CiCirclePlus size={size.iconSize} color={colors.gray800} />
+        </Link>
       </Flex>
       <Spacing size={spacing.contentsGap} />
       <InfiniteScroll

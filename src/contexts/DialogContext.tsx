@@ -1,60 +1,79 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react'
-import Dialog, { DialogProps } from '@mui/material/Dialog'
 import {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from '@mui/material'
-import Button from '@/components/shared/Button'
+  ComponentProps,
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react'
+import { createPortal } from 'react-dom'
 
-interface DialogContextType {
-  openDialog: () => void
-  closeDialog: () => void
+import Dialog from '@shared/Dialog'
+
+type DialogProps = ComponentProps<typeof Dialog>
+type DialogOptions = Omit<DialogProps, 'open'>
+
+interface DialogContextValue {
+  open: (options: DialogOptions) => void
 }
 
-const DialogContext = createContext<DialogContextType | undefined>(undefined)
+const Context = createContext<DialogContextValue | undefined>(undefined)
 
-interface DialogProviderProps {
-  children: ReactNode
+const defaultValues: DialogProps = {
+  open: false,
+  title: null,
+  description: null,
+  onConfirmClick: () => {},
 }
 
-export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
-  const [open, setOpen] = useState<boolean>(false)
+export function DialogContextProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const [dialogState, setDialogState] = useState(defaultValues)
 
-  const openDialog = () => {
-    setOpen(true)
-  }
+  const $portal_root = document.getElementById('root-portal')
 
-  const closeDialog = () => {
-    setOpen(false)
-  }
+  const close = useCallback(() => {
+    setDialogState(defaultValues)
+  }, [])
+
+  const open = useCallback(
+    ({ onConfirmClick, ...options }: DialogOptions) => {
+      setDialogState({
+        ...options,
+        onConfirmClick: () => {
+          close()
+          onConfirmClick()
+        },
+        onCancelClick: () => {
+          close()
+        },
+        open: true,
+      })
+    },
+    [close],
+  )
+
+  const values = useMemo(() => ({ open }), [open])
 
   return (
-    <DialogContext.Provider value={{ openDialog, closeDialog }}>
-      <Dialog open={open} onClose={closeDialog}>
-        <DialogTitle>{"Use Google's location service?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDialog}>Disagree</Button>
-          <Button onClick={closeDialog} autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </DialogContext.Provider>
+    <Context.Provider value={values}>
+      {children}
+      {$portal_root != null
+        ? createPortal(<Dialog {...dialogState} />, $portal_root)
+        : null}
+    </Context.Provider>
   )
 }
 
-export const useDialog = (): DialogContextType => {
-  const context = useContext(DialogContext)
-  if (!context) {
-    throw new Error('useDialog must be used within a DialogProvider')
+export function useDialogContext() {
+  const values = useContext(Context)
+
+  if (values == null) {
+    throw new Error('DialogContext 내부에서 사용해주세요')
   }
-  return context
+
+  return values
 }

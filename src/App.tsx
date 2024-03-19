@@ -10,6 +10,7 @@ import ChecklistsPage from '@pages/Checklists'
 import SigninPage from '@pages/Signin'
 import MyPage from '@pages/My'
 import DevPage from '@pages/Dev'
+import ChecklistFormPage from '@pages/ChecklistForm'
 
 function App() {
   return (
@@ -31,6 +32,22 @@ function App() {
             element={
               <AuthRoute>
                 <ChecklistsPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/checklist/new"
+            element={
+              <AuthRoute>
+                <ChecklistFormPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/checklist/edit"
+            element={
+              <AuthRoute>
+                <ChecklistFormPage />
               </AuthRoute>
             }
           />

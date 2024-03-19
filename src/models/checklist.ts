@@ -1,7 +1,8 @@
 export interface Checklist {
   id: string
   name: string
-  type: 'DEFAULT_TEMPLATE' | 'CUSTOM_TEMPLATE' | 'SHARE_TEMPLATE' | 'IN_USE'
+  type: 'DEFAULT_TEMPLATE' | 'CUSTOM_TEMPLATE' | 'SHARE_TEMPLATE'
+  inUse: boolean
   userId: string
   createdAt: Date
   usedAt: Date
