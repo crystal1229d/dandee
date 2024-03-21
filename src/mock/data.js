@@ -157,3 +157,18 @@ export const CHECKLIST_ITEM = [
     isChecked: false,
   },
 ]
+
+export const CHECKLIST_FORM = [
+  {
+    id: 'name',
+    label: '체크리스트 이름',
+    required: true,
+    type: 'TEXT_FIELD',
+  },
+  {
+    id: 'inUse',
+    label: '사용여부',
+    required: true,
+    type: 'CHECKBOX',
+  },
+]

@@ -1,14 +1,14 @@
 import { useQuery } from 'react-query'
 
 import useUser from '@hooks/auth/useUser'
-import { getChecklists } from '@remote/checklist'
+import { getChecklist } from '@remote/checklist'
 
-function useChecklists() {
+function useChecklist({ checklistId }: { checklistId: string }) {
   const user = useUser()
 
   const { data, isLoading } = useQuery(
-    ['checklists', user?.uid],
-    () => getChecklists({ userId: user?.uid as string }),
+    ['checklist', checklistId, user?.uid],
+    () => getChecklist({ checklistId, userId: user?.uid as string }),
     {
       enabled: user != null,
     },
@@ -17,4 +17,4 @@ function useChecklists() {
   return { data, isLoading }
 }
 
-export default useChecklists
+export default useChecklist
