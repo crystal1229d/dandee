@@ -1,14 +1,15 @@
-import { css } from '@emotion/react'
 import { Link } from 'react-router-dom'
+import { css } from '@emotion/react'
 import { format } from 'date-fns'
+import qs from 'qs'
 
 import { TAGS } from '@constants'
 import { removeChecklist, updateChecklist } from '@remote/checklist'
 import { Checklist } from '@models/checklist'
+import { useDialogContext } from '@contexts/DialogContext'
 
 import { spacing } from '@styles/sharedStyles'
 import { colors } from '@styles/colorPalette'
-import { useDialogContext } from '@contexts/DialogContext'
 import Flex from '@shared/Flex'
 import Text from '@shared/Text'
 import Tag from '@shared/Tag'
@@ -18,6 +19,8 @@ import Button from '@shared/Button'
 function ChecklistCard({ checklist }: { checklist: Checklist }) {
   const { id, name, type, inUse, createdAt, usedAt } = checklist
   const { open } = useDialogContext()
+
+  const params = qs.stringify({ checklistId: id }, { addQueryPrefix: true })
 
   const handleClickUse = () => {
     open({
@@ -71,7 +74,7 @@ function ChecklistCard({ checklist }: { checklist: Checklist }) {
   return (
     <Flex dir="column" css={containerStyle}>
       {/* 템플릿 정보 */}
-      <Link to="/checklist/edit">
+      <Link to={`/checklist/edit${params}`}>
         <Flex dir="column" gap={30}>
           <Flex dir="column">
             <Text typography="t4">{name}</Text>

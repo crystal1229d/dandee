@@ -53,27 +53,27 @@ export const CHECKLIST_CATEGORY = [
   {
     name: '필수품',
     order: 1,
-    isFolded: false,
+    isExpanded: true,
   },
   {
     name: '의류',
     order: 2,
-    isFolded: true,
+    isExpanded: false,
   },
   {
     name: '스킨케어',
     order: 3,
-    isFolded: true,
+    isExpanded: false,
   },
   {
     name: '약',
     order: 4,
-    isFolded: false,
+    isExpanded: true,
   },
   {
     name: '가져가면 좋아요',
     order: 5,
-    isFolded: true,
+    isExpanded: false,
   },
 ]
 

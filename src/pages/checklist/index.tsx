@@ -27,10 +27,11 @@ function CheckListPage() {
         </ContentsButtonBar>
       </Flex>
       <Spacing size={spacing.contentsGap} />
-      <Flex align="center" css={actionButtonContainer}>
+      <Flex align="center" gap={16} css={actionButtonContainer}>
         <Checkbox onCheck={() => {}} text="전체 선택/해제" />
         <Checkbox onCheck={() => {}} text="체크/편집 모드" />
       </Flex>
+      <Spacing size={16} />
       <Flex dir="column">
         <Accordion label="필수품">
           <div>hi</div>
@@ -43,13 +44,14 @@ function CheckListPage() {
 
 const container = css`
   height: calc(100vh - 81px);
-  background: ${colors.gray100};
 `
 
 const actionButtonContainer = css`
   height: 65px;
   margin: 0 ${spacing.pageLeftRight};
+  padding: 0 ${spacing.pageLeftRight};
   background: ${colors.white};
+  border: 1px solid ${colors.gray200};
   border-radius: 10px;
 `
 

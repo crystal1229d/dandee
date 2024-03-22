@@ -23,7 +23,12 @@ function Checkbox({ checked, onCheck, text }: CheckboxProps) {
 }
 
 const containerStyle = css`
+  width: fit-content;
   height: 35px;
+
+  & > input {
+    display: none;
+  }
 
   label {
     background-color: ${colors.white};
