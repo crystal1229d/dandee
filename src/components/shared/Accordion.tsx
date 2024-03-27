@@ -8,7 +8,7 @@ import { css } from '@emotion/react'
 import Flex from '@shared/Flex'
 
 interface AccordionProps {
-  label: string
+  label: React.ReactNode
   subLabel?: React.ReactNode
   isExpanded?: boolean
 }

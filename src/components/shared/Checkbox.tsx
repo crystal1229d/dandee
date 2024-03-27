@@ -3,34 +3,27 @@ import { css } from '@emotion/react'
 import { colors } from '@/styles/colorPalette'
 import Flex from '@shared/Flex'
 import Text from '@shared/Text'
+import { forwardRef, InputHTMLAttributes, useState } from 'react'
 
-interface CheckboxProps {
+interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   text?: string
-  checked?: boolean
-  onCheck: () => void
-}
-
-function Checkbox({ checked, onCheck, text }: CheckboxProps) {
-  return (
-    <Flex align="center" justify="center" gap={5} css={containerStyle}>
-      <input type="checkbox" checked={checked} onChange={onCheck} />
-      <label htmlFor="checkbox"></label>
-      <Text typography="t5" style={{ lineHeight: 'normal' }}>
-        {text}
-      </Text>
-    </Flex>
-  )
+  defaultChecked?: boolean
 }
 
 const containerStyle = css`
   width: fit-content;
   height: 35px;
+  cursor: pointer;
+
+  &:hover > span {
+    color: ${colors.blue980};
+  }
 
   & > input {
     display: none;
   }
 
-  label {
+  & label {
     background-color: ${colors.white};
     border: 1px solid #ccc;
     border-radius: 50%;
@@ -39,32 +32,58 @@ const containerStyle = css`
     width: 26px;
   }
 
-  label:after {
-    border: 2px solid ${colors.white};
-    border-top: none;
-    border-right: none;
-    content: '';
+  & label:after {
     height: 6px;
-    left: 7px;
-    opacity: 0;
-    position: absolute;
-    top: 8px;
-    transform: rotate(-45deg);
     width: 12px;
+    position: relative;
+    left: 7px;
+    top: 7px;
+    content: '✔';
+
+    color: ${colors.blue980};
+    border: none;
+    opacity: 0;
+    transform: rotate(-45deg);
   }
 
-  input[type='checkbox'] {
+  & input[type='checkbox'] {
     visibility: hidden;
   }
 
-  input[type='checkbox']:checked + label {
-    background-color: ${colors.blue980};
-    border-color: ${colors.blue980};
+  & input[type='checkbox']:checked + label {
+    background-color: ${colors.white};
   }
 
-  input[type='checkbox']:checked + label:after {
+  & input[type='checkbox']:checked + label:after {
     opacity: 1;
   }
 `
+
+const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
+  { defaultChecked, text, ...props },
+  ref,
+) {
+  const [isChecked, setIsChecked] = useState(defaultChecked || false)
+
+  const handleCheck = () => {
+    setIsChecked((prev) => !prev)
+  }
+
+  return (
+    <Flex
+      align="center"
+      justify="center"
+      gap={5}
+      css={containerStyle}
+      onClick={handleCheck}
+    >
+      <input type="checkbox" checked={isChecked} {...props} />
+      <label htmlFor="checkbox"></label>
+      <Text typography="t5" style={{ lineHeight: 'normal' }}>
+        {text}
+      </Text>
+    </Flex>
+  )
+})
 
 export default Checkbox
