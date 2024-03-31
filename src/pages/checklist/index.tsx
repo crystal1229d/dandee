@@ -28,8 +28,8 @@ function CheckListPage() {
       </Flex>
       <Spacing size={spacing.contentsGap} />
       <Flex align="center" gap={16} css={actionButtonContainer}>
-        <Checkbox onCheck={() => {}} text="전체 선택/해제" />
-        <Checkbox onCheck={() => {}} text="체크/편집 모드" />
+        <Checkbox text="전체 선택/해제" />
+        <Checkbox text="체크/편집 모드" />
       </Flex>
       <Spacing size={16} />
       <Flex dir="column">

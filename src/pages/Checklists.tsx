@@ -1,20 +1,21 @@
+import React from 'react'
+import { Link } from 'react-router-dom'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import { css } from '@emotion/react'
 
-import ChecklistCard from '@/components/checklists/ChecklistCard'
-import useChecklists from '@/components/checklists/hooks/useChecklists'
+import useChecklist from '@hooks/checklist/useChecklist'
+import { Checklist } from '@models/checklist'
+
+import { colors } from '@styles/colorPalette'
+import { size, spacing } from '@styles/sharedStyles'
+import ChecklistCard from '@components/checklists/ChecklistCard'
 import Flex from '@shared/Flex'
 import Spacing from '@shared/Spacing'
 import Title from '@shared/Title'
-import { colors } from '@styles/colorPalette'
-import React from 'react'
-import InfiniteScroll from 'react-infinite-scroll-component'
-
 import { CiCirclePlus } from 'react-icons/ci'
-import { size, spacing } from '@/styles/sharedStyles'
-import { Link } from 'react-router-dom'
 
 function ChecklistsPage() {
-  const { data: checklists, hasNextPage, loadMore } = useChecklists()
+  const { data: checklists, hasNextPage, loadMore } = useChecklist()
 
   return (
     <div css={container}>
@@ -37,7 +38,7 @@ function ChecklistsPage() {
         style={{ overflowY: 'hidden' }}
       >
         <ul>
-          {checklists?.map((checklist) => (
+          {checklists?.map((checklist: Checklist) => (
             <React.Fragment key={checklist.id}>
               <ChecklistCard checklist={checklist} />
               <Spacing size={spacing.contentsGap} />

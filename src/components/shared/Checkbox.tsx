@@ -66,6 +66,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
   const [isChecked, setIsChecked] = useState(defaultChecked || false)
 
   const handleCheck = () => {
+    console.log('handleCheck : ', isChecked)
     setIsChecked((prev) => !prev)
   }
 
@@ -77,7 +78,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
       css={containerStyle}
       onClick={handleCheck}
     >
-      <input type="checkbox" checked={isChecked} {...props} />
+      <input id="checkbox" type="checkbox" checked={isChecked} {...props} />
       <label htmlFor="checkbox"></label>
       <Text typography="t5" style={{ lineHeight: 'normal' }}>
         {text}

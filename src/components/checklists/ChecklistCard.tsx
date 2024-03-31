@@ -4,7 +4,6 @@ import { format } from 'date-fns'
 import qs from 'qs'
 
 import { TAGS } from '@constants'
-import { removeChecklist, updateChecklist } from '@remote/checklist'
 import { Checklist } from '@models/checklist'
 import { useDialogContext } from '@contexts/DialogContext'
 
@@ -15,10 +14,12 @@ import Text from '@shared/Text'
 import Tag from '@shared/Tag'
 import Spacing from '@shared/Spacing'
 import Button from '@shared/Button'
+import useChecklist from '@hooks/checklist/useChecklist'
 
 function ChecklistCard({ checklist }: { checklist: Checklist }) {
   const { id, name, type, inUse, createdAt, usedAt } = checklist
   const { open } = useDialogContext()
+  const { update, remove } = useChecklist()
 
   const params = qs.stringify({ checklistId: id }, { addQueryPrefix: true })
 
@@ -26,7 +27,7 @@ function ChecklistCard({ checklist }: { checklist: Checklist }) {
     open({
       title: `"${name}" 를 ${inUse ? '사용해제' : '사용'}하시겠습니까?`,
       onConfirmClick: () => {
-        updateChecklist({
+        update({
           checklistId: id,
           newChecklist: { ...checklist, inUse: !inUse },
         })
@@ -38,7 +39,7 @@ function ChecklistCard({ checklist }: { checklist: Checklist }) {
     open({
       title: `"${name}" 를 삭제하시겠습니까?`,
       onConfirmClick: () => {
-        removeChecklist({ checklistId: id })
+        remove({ checklistId: id })
       },
     })
   }

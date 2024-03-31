@@ -52,7 +52,14 @@ function useChecklist() {
       if (user == null) {
         throw new Error('로그인 필요')
       }
-      await createChecklist({ userId: user.uid, checklist: newChecklist })
+      await createChecklist({
+        checklist: {
+          ...newChecklist,
+          createdAt: new Date(),
+          usedAt: new Date(),
+          userId: user?.uid as string,
+        },
+      })
 
       return true
     },
@@ -93,12 +100,15 @@ function useChecklist() {
       if (user == null) {
         throw new Error('로그인 필요')
       }
-      await updateChecklist({ checklistId, newChecklist })
-
-      return true
+      await updateChecklist({
+        checklistId,
+        userId: user?.uid,
+        newChecklist,
+      })
     },
     {
       onSuccess: () => {
+        // client.invalidateQueries(['checklist', checklistId, user?.uid])
         client.invalidateQueries(['checklists', user?.uid])
       },
       onError: (e: Error) => {

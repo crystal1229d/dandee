@@ -2,7 +2,7 @@ import { collection, doc, writeBatch } from 'firebase/firestore'
 import { db } from '@lib/firebase'
 
 import { COLLECTIONS } from '@constants'
-import { CHECKLISTS, CHECKLIST_CATEGORY, CHECKLIST_ITEM } from '@/mock/data'
+import { CHECKLISTS } from '@/mock/data'
 
 import Button from '@shared/Button'
 
@@ -17,6 +17,14 @@ function CheckListAddButton() {
       }
     })
 
+    checklists.forEach((checklist) => {
+      const checklistDocRef = doc(collection(db, COLLECTIONS.CHECKLIST))
+      batch.set(checklistDocRef, checklist)
+    })
+
+    await batch.commit()
+
+    /*
     checklists.forEach((checklist) => {
       // FIRESTORE DB 의 CHECKLIST COLLECTION 의 DOCUMENT REFERENCE(=DB의 특정 위치를 가리키는 객체) 생성
       // COLLECTION REFERENCE : COLLECTION 의 DOCUMENT 쿼리
@@ -48,6 +56,7 @@ function CheckListAddButton() {
 
     // commit the batch
     await batch.commit()
+    */
 
     alert('체크리스트 데이터가 생성되었습니다.')
   }
