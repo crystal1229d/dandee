@@ -8,6 +8,7 @@ import { forwardRef, InputHTMLAttributes, useState } from 'react'
 interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   text?: string
   defaultChecked?: boolean
+  onCheckChange?: () => void
 }
 
 const containerStyle = css`
@@ -60,14 +61,14 @@ const containerStyle = css`
 `
 
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
-  { defaultChecked, text, ...props },
+  { defaultChecked, text, onCheckChange, ...props },
   ref,
 ) {
   const [isChecked, setIsChecked] = useState(defaultChecked || false)
 
   const handleCheck = () => {
-    console.log('handleCheck : ', isChecked)
     setIsChecked((prev) => !prev)
+    if (onCheckChange) onCheckChange()
   }
 
   return (
@@ -78,7 +79,13 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
       css={containerStyle}
       onClick={handleCheck}
     >
-      <input id="checkbox" type="checkbox" checked={isChecked} {...props} />
+      <input
+        id="checkbox"
+        name="inUse"
+        type="checkbox"
+        checked={isChecked}
+        {...props}
+      />
       <label htmlFor="checkbox"></label>
       <Text typography="t5" style={{ lineHeight: 'normal' }}>
         {text}

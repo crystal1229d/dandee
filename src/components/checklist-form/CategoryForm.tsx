@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { css } from '@emotion/react'
 
 import { Checklist, ChecklistCategory } from '@/models/checklist'
@@ -22,7 +22,20 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
   const [newCategoryName, setNewCategoryName] = useState<string>('')
   const [newItemName, setNewItemName] = useState<{ [key: string]: string }>({})
 
-  // @TODO: handleUpdateCategory, handleUpateItem
+  useEffect(() => {
+    if (formData && formData.categories) {
+      const initialItemName: { [key: string]: string } = {}
+      formData.categories.forEach((category) => {
+        if (category.items) {
+          category.items.forEach((item) => {
+            initialItemName[item.id] = item.name
+          })
+        }
+      })
+      setNewItemName(initialItemName)
+    }
+  }, [formData])
+
   const handleAddCategory = useCallback(() => {
     if (newCategoryName === '') {
       return
@@ -39,12 +52,13 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
       items: [],
     }
     const updatedCategories = [...(formData.categories || []), newCategory]
+
+    setNewCategoryName('')
+
     onFormDataChange({
       ...formData,
       categories: updatedCategories,
     })
-
-    setNewCategoryName('')
   }, [formData, newCategoryName, onFormDataChange])
   const handleDeleteCategory = useCallback(
     (categoryId: string) => {
@@ -62,6 +76,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
     },
     [formData, onFormDataChange],
   )
+  // @TODO: const handleUpdateCategory = () => {}
   const handleAddItem = useCallback(
     (categoryId: string) => {
       if (newItemName[categoryId] === '') {
@@ -89,12 +104,13 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
         }
         return category
       })
+
+      setNewItemName({ ...newItemName, [categoryId]: '' })
+
       onFormDataChange({
         ...formData,
         categories: updatedCategories,
       })
-
-      setNewItemName({ ...newItemName, [categoryId]: '' })
     },
     [newItemName, formData, onFormDataChange],
   )
@@ -190,7 +206,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
                 style={{ marginLeft: '10px' }}
               />
             }
-            isExpanded={!isExpanded}
+            isExpanded={isExpanded}
           >
             {items?.map((item) => {
               return (
@@ -201,8 +217,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
                     css={checklistItemStyles}
                   >
                     <TextField
-                      placeholder={item.name}
-                      value={newItemName[item.id] || item.name}
+                      value={newItemName[item.id]}
                       css={textFieldStyles}
                       onChange={(e) =>
                         setNewItemName({
@@ -240,7 +255,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
                     [category.id]: e.target.value,
                   })
                 }
-                onKeyDown={(e) => handleKeyPressOnItem(e, category.id)}
+                onKeyUpCapture={(e) => handleKeyPressOnItem(e, category.id)}
               />
               <AiOutlinePlus
                 onClick={() => handleAddItem(category.id)}

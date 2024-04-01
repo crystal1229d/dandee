@@ -14,10 +14,17 @@ interface ChecklistFormProps {
 function BaseInfoForm({ formData, onFormDataChange }: ChecklistFormProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    console.log('handleInputChange => ', name, value)
     onFormDataChange((prevData) => ({
       ...prevData,
       [name]: value,
+    }))
+  }
+
+  const handleCheckboxClick = () => {
+    console.log('handleCheckboxClick => ')
+    onFormDataChange((prevData) => ({
+      ...prevData,
+      inUse: !prevData.inUse,
     }))
   }
 
@@ -39,10 +46,9 @@ function BaseInfoForm({ formData, onFormDataChange }: ChecklistFormProps) {
         />
         <Checkbox
           id="inUse"
-          name="inUse"
           text="사용하기"
           defaultChecked={formData.inUse}
-          onChange={handleInputChange}
+          onCheckChange={handleCheckboxClick}
         />
       </Flex>
 

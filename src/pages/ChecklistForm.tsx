@@ -23,11 +23,11 @@ function ChecklistFormPage() {
     checklistId: string
   }
 
-  useEffect(() => {
-    if (checklistId == null) {
-      window.history.back()
-    }
-  }, [checklistId])
+  // useEffect(() => {
+  //   if (checklistId == null) {
+  //     window.history.back()
+  //   }
+  // }, [checklistId])
 
   const { update } = useChecklist()
 
@@ -37,7 +37,6 @@ function ChecklistFormPage() {
   }
 
   const [tempForm, setTempForm] = useState<Checklist>(data)
-  console.log(tempForm)
   useEffect(() => {
     if (!isLoading && data !== null) {
       setTempForm(data)
@@ -57,8 +56,7 @@ function ChecklistFormPage() {
     //   navigate('/checklists') // @TODO: 완성된 체크리스트 페이지로 이동
     // }
 
-    // 수정
-    await update({ checklistId, newChecklist: tempForm })
+    update({ checklistId, newChecklist: tempForm })
 
     alert('체크리스트 수정이 완료되었습니다')
 

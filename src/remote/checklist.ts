@@ -59,8 +59,7 @@ export async function getChecklists({
   }
 }
 
-// 체크리스트 생성
-// 하위내역(카테고리, 아이템) 모두 추가
+// 체크리스트 생성 : 하위내역(카테고리, 아이템) 모두 추가
 // @TODO: '사용중' 인 체크리스트 최소 0개, 최대1개만 존재 가능
 export async function createChecklist({
   checklist,
@@ -122,8 +121,7 @@ export async function createChecklist({
   }
 }
 
-// 체크리스트 수정
-// 하위내역(카테고리, 아이템) 변경 X / 체크리스트 이름 또는 사용여부만 변경
+// 체크리스트 수정 : 하위내역(카테고리, 아이템) 모두 변경
 export async function updateChecklist({
   checklistId,
   userId,
@@ -133,13 +131,37 @@ export async function updateChecklist({
   userId: string
   newChecklist: Partial<Checklist>
 }) {
-  // @TODO: '사용중' 인 체크리스트 최소 0개, 최대1개만 존재 가능
-  const checklistRef = doc(collection(db, COLLECTIONS.CHECKLIST), checklistId)
+  // @TODO: '사용중'인 체크리스트 최소 0개, 최대1개만 존재 가능
+  const checklistQuery = query(
+    collection(db, COLLECTIONS.CHECKLIST),
+    where('id', '==', checklistId),
+    where('userId', '==', userId),
+  )
+  const checklistSnapshot = await getDocs(checklistQuery)
+
+  if (checklistSnapshot.empty) {
+    throw new Error('해당하는 체크리스트를 찾을 수 없습니다.')
+  }
+  const checklistRef = checklistSnapshot.docs[0].ref
+
+  if (newChecklist.inUse === true) {
+    // 다른 '사용중'인 체크리스트의 사용중 상태 해제
+    const inUseQuery = query(
+      collection(db, COLLECTIONS.CHECKLIST),
+      where('userId', '==', userId),
+      where('inUse', '==', true),
+    )
+    const inUseSnapshot = await getDocs(inUseQuery)
+    if (!inUseSnapshot.empty) {
+      const inUseRef = inUseSnapshot.docs[0].ref
+      await updateDoc(inUseRef, { inUse: false })
+    }
+  }
+
   return updateDoc(checklistRef, newChecklist)
 }
 
-// 체크리스트 삭제
-// 하위내역(카테고리, 아이템) 모두 삭제
+// 체크리스트 삭제 : 하위내역(카테고리, 아이템) 모두 삭제
 export async function removeChecklist({
   checklistId,
   userId,
@@ -160,15 +182,13 @@ export async function removeChecklist({
     }
     const checklistRef = checklistSnapshot.docs[0].ref
 
-    // 체크리스트 삭제
     return deleteDoc(checklistRef)
   } catch (error) {
     throw error
   }
 }
 
-// 특정 체크리스트 상세 조회
-// 하위내역 (카테고리, 아이템) 모두 조회
+// 특정 체크리스트 상세 조회 : 하위내역 (카테고리, 아이템) 모두 조회
 export async function getChecklist({
   checklistId,
   userId,
