@@ -11,11 +11,12 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: React.ReactNode
   hasError?: boolean
   helpMessage?: React.ReactNode
+  inputSize?: number
 }
 
 const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
   function TextField(
-    { label, hasError, helpMessage, onFocus, onBlur, ...props },
+    { label, hasError, helpMessage, onFocus, onBlur, inputSize, ...props },
     ref,
   ) {
     const [focused, setFocused] = useState(false)
@@ -50,6 +51,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           aria-invalid={hasError}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          size={inputSize}
           {...props}
         />
 

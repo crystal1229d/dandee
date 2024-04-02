@@ -1,22 +1,25 @@
 import { PropsWithChildren, useEffect, useState } from 'react'
-import Text from './Text'
-import { IoIosArrowDown } from 'react-icons/io'
-import styled from '@emotion/styled'
-import { colors } from '@/styles/colorPalette'
-import { spacing } from '@/styles/spacing'
 import { css } from '@emotion/react'
+import styled from '@emotion/styled'
+
+import { IoIosArrowDown } from 'react-icons/io'
+import { colors } from '@styles/colorPalette'
+import { spacing } from '@styles/spacing'
 import Flex from '@shared/Flex'
+import TextField from '@shared/TextField'
 
 interface AccordionProps {
   label: React.ReactNode
   subLabel?: React.ReactNode
   isExpanded?: boolean
+  onChangeLabel?: (name: string) => void
 }
 
 function Accordion({
   label,
   subLabel = null,
   isExpanded = false,
+  onChangeLabel,
   children,
 }: PropsWithChildren<AccordionProps>) {
   const [expanded, setExpanded] = useState(isExpanded)
@@ -32,8 +35,14 @@ function Accordion({
   return (
     <Flex dir="column" css={container}>
       <Header onClick={handleToggle} expanded={expanded}>
-        <Flex>
-          <Text bold={true}>{label}</Text>
+        <Flex align="center">
+          {/* <Text bold={true}>{label}</Text> */}
+          <TextField
+            value={label?.toString()}
+            css={textFieldStyles}
+            inputSize={(label?.toString().length || 1) * 1.6 || 2}
+            onChange={(e) => onChangeLabel?.(e.target.value)}
+          />
           {subLabel}
         </Flex>
         <IoIosArrowDown id="arrow" />
@@ -78,6 +87,20 @@ const Header = styled.div<{ expanded: boolean }>`
 
 const Contents = styled.div<{ expanded: boolean }>`
   display: ${({ expanded }) => (expanded ? 'block' : 'none')};
+`
+
+const textFieldStyles = css`
+  border: none;
+  font-weight: 800;
+  font-size: 17px;
+  line-height: 1.5;
+  background-color: transparent;
+  cursor: default;
+  padding-left: 0;
+
+  &:focus {
+    outline: none;
+  }
 `
 
 export default Accordion

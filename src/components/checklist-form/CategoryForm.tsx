@@ -41,12 +41,13 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
       return
     }
 
-    const categoriesLength = formData?.categories?.length || 1
+    const catLength = formData?.categories?.length || 1
+    const catId = `cat${catLength}`
 
     const newCategory = {
-      id: String(formData?.categories?.length || 1),
+      id: catId,
       name: newCategoryName,
-      order: categoriesLength,
+      order: catLength,
       isExpanded: false,
       checklistId: formData.id,
       items: [],
@@ -60,6 +61,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
       categories: updatedCategories,
     })
   }, [formData, newCategoryName, onFormDataChange])
+
   const handleDeleteCategory = useCallback(
     (categoryId: string) => {
       if (!formData.categories) {
@@ -76,10 +78,34 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
     },
     [formData, onFormDataChange],
   )
-  // @TODO: const handleUpdateCategory = () => {}
+
+  const handleUpdateCategory = useCallback(
+    (categoryId: string, newName: string) => {
+      if (!formData.categories) {
+        return
+      }
+
+      const updatedCategories = formData.categories.map((category) => {
+        if (category.id === categoryId) {
+          return {
+            ...category,
+            name: newName,
+          }
+        }
+        return category
+      })
+
+      onFormDataChange({
+        ...formData,
+        categories: updatedCategories,
+      })
+    },
+    [formData, onFormDataChange],
+  )
+
   const handleAddItem = useCallback(
     (categoryId: string) => {
-      if (newItemName[categoryId] === '') {
+      if (newItemName[categoryId] === '' || !newItemName[categoryId]) {
         return
       }
 
@@ -91,7 +117,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
         if (category.id === categoryId) {
           const updatedItems = category.items ? [...category.items] : []
           updatedItems.push({
-            id: String(updatedItems.length + 1),
+            id: `${categoryId}_${updatedItems.length + 1}`,
             name: newItemName[categoryId],
             order: updatedItems.length + 1,
             isChecked: false,
@@ -114,6 +140,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
     },
     [newItemName, formData, onFormDataChange],
   )
+
   const handleDeleteItem = useCallback(
     (categoryId: string, itemId: string) => {
       if (!formData.categories) {
@@ -122,8 +149,6 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
 
       const updatedCategories = formData.categories.map((category) => {
         if (category.id === categoryId && category.items) {
-          console.log(category.items, itemId)
-
           return {
             ...category,
             items: category.items.filter((item) => item.id !== itemId),
@@ -138,6 +163,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
     },
     [formData, onFormDataChange],
   )
+
   const handleUpdateItem = useCallback(
     (categoryId: string, itemId: string, modifiedItemName: string) => {
       if (!formData.categories) {
@@ -173,6 +199,10 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
   const handleKeyPressOnCategory = useCallback(
     async (e: React.KeyboardEvent) => {
       if (e.key === 'Enter') {
+        if (e.isPropagationStopped()) return
+        e.preventDefault()
+        e.stopPropagation()
+
         handleAddCategory()
       }
     },
@@ -181,6 +211,10 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
   const handleKeyPressOnItem = useCallback(
     async (e: React.KeyboardEvent, categoryId: string) => {
       if (e.key === 'Enter') {
+        if (e.isPropagationStopped()) return
+        e.preventDefault()
+        e.stopPropagation()
+
         handleAddItem(categoryId)
       }
     },
@@ -207,6 +241,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
               />
             }
             isExpanded={isExpanded}
+            onChangeLabel={(newName) => handleUpdateCategory(id, newName)}
           >
             {items?.map((item) => {
               return (
@@ -255,7 +290,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
                     [category.id]: e.target.value,
                   })
                 }
-                onKeyUpCapture={(e) => handleKeyPressOnItem(e, category.id)}
+                onKeyUp={(e) => handleKeyPressOnItem(e, category.id)}
               />
               <AiOutlinePlus
                 onClick={() => handleAddItem(category.id)}
@@ -273,6 +308,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
     formData,
     newItemName,
     handleDeleteCategory,
+    handleUpdateCategory,
     handleUpdateItem,
     handleDeleteItem,
     handleKeyPressOnItem,
@@ -294,7 +330,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
           css={textFieldStyles}
           size={80}
           onChange={(e) => setNewCategoryName(e.target.value)}
-          onKeyDown={(e) => handleKeyPressOnCategory(e)}
+          onKeyUp={(e) => handleKeyPressOnCategory(e)}
         />
         <AiOutlinePlus
           onClick={() => handleAddCategory()}
