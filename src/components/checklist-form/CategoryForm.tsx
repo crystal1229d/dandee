@@ -1,5 +1,18 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { css } from '@emotion/react'
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DroppableProps,
+  DropResult,
+} from 'react-beautiful-dnd'
 
 import { Checklist, ChecklistCategory } from '@/models/checklist'
 
@@ -208,6 +221,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
     },
     [handleAddCategory],
   )
+
   const handleKeyPressOnItem = useCallback(
     async (e: React.KeyboardEvent, categoryId: string) => {
       if (e.key === 'Enter') {
@@ -221,91 +235,167 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
     [handleAddItem],
   )
 
+  const reorder = useCallback(
+    (from: number, to: number) => {
+      if (!formData.categories) {
+        return
+      }
+
+      const updatedCategories = Array.from(formData.categories)
+      const [removedCategory] = updatedCategories.splice(from, 1)
+      updatedCategories.splice(to, 0, removedCategory)
+
+      updatedCategories.forEach((category, index) => {
+        category.order = index
+      })
+
+      onFormDataChange({
+        ...formData,
+        categories: updatedCategories,
+      })
+    },
+    [formData, onFormDataChange],
+  )
+
+  const handleDragAndDrop = useCallback(
+    (result: DropResult) => {
+      if (result.destination == null) {
+        return
+      }
+
+      const from = result.source.index
+      const to = result.destination?.index
+
+      reorder(from, to)
+    },
+    [reorder],
+  )
+
   const renderedCategories = useMemo(() => {
     if (!formData || !formData.categories) {
       return null
     }
 
-    return formData?.categories?.map((category: ChecklistCategory) => {
-      const { id, name, isExpanded, items } = category
-      return (
-        <Flex dir="column" key={id}>
-          <Accordion
-            label={name}
-            subLabel={
-              <BsTrash3
-                onClick={() => handleDeleteCategory(id)}
-                size={19}
-                css={iconStyles}
-                style={{ marginLeft: '10px' }}
-              />
-            }
-            isExpanded={isExpanded}
-            onChangeLabel={(newName) => handleUpdateCategory(id, newName)}
-          >
-            {items?.map((item) => {
-              return (
-                <Fragment key={item.id}>
-                  <Flex
-                    align="center"
-                    justify="space-between"
-                    css={checklistItemStyles}
-                  >
-                    <TextField
-                      value={newItemName[item.id]}
-                      css={textFieldStyles}
-                      onChange={(e) =>
-                        setNewItemName({
-                          ...newItemName,
-                          [item.id]: e.target.value,
-                        })
-                      }
-                      onBlur={(e) =>
-                        handleUpdateItem(category.id, item.id, e.target.value)
-                      }
-                    />
-                    <BsTrash3
-                      onClick={() => handleDeleteItem(id, item.id)}
-                      size={19}
-                      css={iconStyles}
-                    />
-                  </Flex>
-                  <Spacing size={15} />
-                </Fragment>
-              )
-            })}
-            <Flex
-              align="center"
-              justify="space-between"
-              css={checklistItemStyles}
-            >
-              <TextField
-                placeholder="새 아이템명을 입력해주세요"
-                value={newItemName[category.id] || ''}
-                css={textFieldStyles}
-                size={80}
-                onChange={(e) =>
-                  setNewItemName({
-                    ...newItemName,
-                    [category.id]: e.target.value,
-                  })
-                }
-                onKeyUp={(e) => handleKeyPressOnItem(e, category.id)}
-              />
-              <AiOutlinePlus
-                onClick={() => handleAddItem(category.id)}
-                size={19}
-                css={iconStyles}
-              />
-            </Flex>
-            <Spacing size={15} />
-          </Accordion>
-          <Spacing size={16} />
-        </Flex>
-      )
-    })
+    return (
+      <React.Fragment>
+        <DragDropContext onDragEnd={handleDragAndDrop}>
+          <StrictModeDroppable droppableId="category">
+            {(droppableProps) => (
+              <ul
+                ref={droppableProps.innerRef}
+                {...droppableProps.droppableProps}
+              >
+                {formData?.categories?.map(
+                  (category: ChecklistCategory, index: number) => {
+                    const { id, name, order, isExpanded, items } = category
+                    return (
+                      <Draggable
+                        key={id}
+                        draggableId={id}
+                        index={order || index}
+                      >
+                        {(draggableProps) => (
+                          <li
+                            ref={draggableProps.innerRef}
+                            {...draggableProps.draggableProps}
+                            {...draggableProps.dragHandleProps}
+                          >
+                            <Accordion
+                              key={id}
+                              label={name}
+                              subLabel={
+                                <BsTrash3
+                                  onClick={() => handleDeleteCategory(id)}
+                                  size={19}
+                                  css={iconStyles}
+                                  style={{ marginLeft: '10px' }}
+                                />
+                              }
+                              isExpanded={isExpanded}
+                              onChangeLabel={(newName) =>
+                                handleUpdateCategory(id, newName)
+                              }
+                            >
+                              {items?.map((item) => {
+                                return (
+                                  <Fragment key={item.id}>
+                                    <Flex
+                                      align="center"
+                                      justify="space-between"
+                                      css={checklistItemStyles}
+                                    >
+                                      <TextField
+                                        value={newItemName[item.id]}
+                                        css={textFieldStyles}
+                                        onChange={(e) =>
+                                          setNewItemName({
+                                            ...newItemName,
+                                            [item.id]: e.target.value,
+                                          })
+                                        }
+                                        onBlur={(e) =>
+                                          handleUpdateItem(
+                                            category.id,
+                                            item.id,
+                                            e.target.value,
+                                          )
+                                        }
+                                      />
+                                      <BsTrash3
+                                        onClick={() =>
+                                          handleDeleteItem(id, item.id)
+                                        }
+                                        size={19}
+                                        css={iconStyles}
+                                      />
+                                    </Flex>
+                                    <Spacing size={15} />
+                                  </Fragment>
+                                )
+                              })}
+                              <Flex
+                                align="center"
+                                justify="space-between"
+                                css={checklistItemStyles}
+                              >
+                                <TextField
+                                  placeholder="새 아이템명을 입력해주세요"
+                                  value={newItemName[category.id] || ''}
+                                  css={textFieldStyles}
+                                  size={80}
+                                  onChange={(e) =>
+                                    setNewItemName({
+                                      ...newItemName,
+                                      [category.id]: e.target.value,
+                                    })
+                                  }
+                                  onKeyUp={(e) =>
+                                    handleKeyPressOnItem(e, category.id)
+                                  }
+                                />
+                                <AiOutlinePlus
+                                  onClick={() => handleAddItem(category.id)}
+                                  size={19}
+                                  css={iconStyles}
+                                />
+                              </Flex>
+                              <Spacing size={15} />
+                            </Accordion>
+                          </li>
+                        )}
+                      </Draggable>
+                    )
+                  },
+                )}
+              </ul>
+            )}
+          </StrictModeDroppable>
+        </DragDropContext>
+      </React.Fragment>
+    )
   }, [
     formData,
+    handleDragAndDrop,
     newItemName,
     handleDeleteCategory,
     handleUpdateCategory,
@@ -321,7 +411,10 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
 
   return (
     <>
-      {renderedCategories}
+      <Flex dir="column">{renderedCategories}</Flex>
+
+      <Spacing size={16} />
+
       <Flex align="center" justify="space-between" css={newCategoryStyles}>
         <TextField
           id={`categories.${formData.categories?.length || 1}.name`}
@@ -340,6 +433,25 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
       </Flex>
     </>
   )
+}
+
+function StrictModeDroppable({ children, ...props }: DroppableProps) {
+  const [enabled, setEnabled] = useState(false)
+
+  useEffect(() => {
+    const animation = requestAnimationFrame(() => setEnabled(true))
+
+    return () => {
+      cancelAnimationFrame(animation)
+      setEnabled(false)
+    }
+  }, [])
+
+  if (enabled === false) {
+    return null
+  }
+
+  return <Droppable {...props}>{children}</Droppable>
 }
 
 const checklistItemStyles = css`
@@ -378,3 +490,6 @@ const newCategoryStyles = css`
 `
 
 export default CategoryForm
+function setUpdatedLikes(arg0: (prevUpdatedLikes: any) => any[]) {
+  throw new Error('Function not implemented.')
+}

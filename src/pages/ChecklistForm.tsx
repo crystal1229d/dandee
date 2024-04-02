@@ -60,8 +60,7 @@ function ChecklistFormPage() {
 
     alert('체크리스트 수정이 완료되었습니다')
 
-    navigate(`/checklist/edit?checklistId=${checklistId}`) // @TODO: 완성된 체크리스트 페이지로 이동
-    // @TODO: 에러발생시 처리 필요
+    navigate(`/checklist/edit?checklistId=${checklistId}`)
   }
 
   const pageTitle = checklistId === '' ? `생성` : `편집`

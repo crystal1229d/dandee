@@ -21,7 +21,6 @@ function BaseInfoForm({ formData, onFormDataChange }: ChecklistFormProps) {
   }
 
   const handleCheckboxClick = () => {
-    console.log('handleCheckboxClick => ')
     onFormDataChange((prevData) => ({
       ...prevData,
       inUse: !prevData.inUse,
