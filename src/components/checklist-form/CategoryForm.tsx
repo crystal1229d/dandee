@@ -381,6 +381,7 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
                               </Flex>
                               <Spacing size={15} />
                             </Accordion>
+                            <Spacing size={16} />
                           </li>
                         )}
                       </Draggable>
@@ -412,8 +413,6 @@ function CategoryForm({ formData, onFormDataChange }: CategoryFormProps) {
   return (
     <>
       <Flex dir="column">{renderedCategories}</Flex>
-
-      <Spacing size={16} />
 
       <Flex align="center" justify="space-between" css={newCategoryStyles}>
         <TextField
@@ -490,6 +489,3 @@ const newCategoryStyles = css`
 `
 
 export default CategoryForm
-function setUpdatedLikes(arg0: (prevUpdatedLikes: any) => any[]) {
-  throw new Error('Function not implemented.')
-}

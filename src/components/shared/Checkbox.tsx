@@ -41,7 +41,7 @@ const containerStyle = css`
     top: 7px;
     content: '✔';
 
-    color: ${colors.blue980};
+    color: ${colors.white};
     border: none;
     opacity: 0;
     transform: rotate(-45deg);
@@ -52,7 +52,7 @@ const containerStyle = css`
   }
 
   & input[type='checkbox']:checked + label {
-    background-color: ${colors.white};
+    background-color: ${colors.blue980};
   }
 
   & input[type='checkbox']:checked + label:after {
@@ -84,6 +84,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
         name="inUse"
         type="checkbox"
         checked={isChecked}
+        onChange={handleCheck}
         {...props}
       />
       <label htmlFor="checkbox"></label>

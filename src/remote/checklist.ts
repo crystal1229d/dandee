@@ -131,7 +131,6 @@ export async function updateChecklist({
   userId: string
   newChecklist: Partial<Checklist>
 }) {
-  // @TODO: '사용중'인 체크리스트 최소 0개, 최대1개만 존재 가능
   const checklistQuery = query(
     collection(db, COLLECTIONS.CHECKLIST),
     where('id', '==', checklistId),
@@ -145,7 +144,7 @@ export async function updateChecklist({
   const checklistRef = checklistSnapshot.docs[0].ref
 
   if (newChecklist.inUse === true) {
-    // 다른 '사용중'인 체크리스트의 사용중 상태 해제
+    // '사용중'인 체크리스트 최소 0개, 최대1개만 존재 가능 => 다른 '사용중'인 체크리스트의 사용중 상태 해제
     const inUseQuery = query(
       collection(db, COLLECTIONS.CHECKLIST),
       where('userId', '==', userId),
@@ -200,6 +199,25 @@ export async function getChecklist({
     collection(db, COLLECTIONS.CHECKLIST),
     where('id', '==', checklistId),
     where('userId', '==', userId),
+  )
+  const checklistSnapshot = await getDocs(checklistQuery)
+
+  const checklist = checklistSnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }))[0]
+
+  return {
+    checklist,
+  }
+}
+
+// '사용중'인 체크리스트 상세 조회
+export async function getChecklistInUse({ userId }: { userId: string }) {
+  const checklistQuery = query(
+    collection(db, COLLECTIONS.CHECKLIST),
+    where('userId', '==', userId),
+    where('inUse', '==', true),
   )
   const checklistSnapshot = await getDocs(checklistQuery)
 
