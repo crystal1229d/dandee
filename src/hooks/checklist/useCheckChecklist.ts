@@ -7,18 +7,39 @@ function useCheckChecklist() {
     data: Checklist
     isLoading: boolean
   }
-  const [updatedChecklist, setUpdatedChecklist] = useState<Checklist>()
 
+  const [updatedChecklist, setUpdatedChecklist] = useState<Checklist>()
+  const [visibleChecklist, setVisibleChecklist] = useState<Checklist>()
+  const [checkedItemCount, setCheckedItemCount] = useState<{
+    [categoryId: string]: number
+  }>({})
+
+  const [isEdit, setIsEdit] = useState(false)
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false)
   const [isExpandedAll, setIsExpandedAll] = useState<boolean>(true)
+  const [isShowingUnchecked, setIsShowingUnchecked] = useState<boolean>(false)
+  // @TODO: 편집/체크모드 ?
+  // @TODO: 여러 개가 체크됐을 경우 ? (예: 못챙긴 항목만 보기 => 전체 선택 시 못챙긴항목 체크해제?)
 
   useEffect(() => {
     if (data != null && !isLoading) {
       setUpdatedChecklist(data)
+      setVisibleChecklist(data)
+
+      const initialCheckedItemCount: { [categoryId: string]: number } = {}
+      data.categories?.forEach((category) => {
+        const checkedItemsCount =
+          category.items?.filter((item) => item.isChecked).length ?? 0
+        initialCheckedItemCount[category.id] = checkedItemsCount
+      })
+
+      setCheckedItemCount(initialCheckedItemCount)
     }
   }, [data, isLoading])
 
   const toggleCheck = useCallback((categoryId: string, itemId: string) => {
+    setIsEdit(true)
+
     setUpdatedChecklist((prev) => {
       if (!prev) return prev
       if (!prev.categories) return prev
@@ -32,11 +53,14 @@ function useCheckChecklist() {
             return item
           })
 
-          const checkedItemCount = updatedItems.filter(
+          const checkedItemCnt = updatedItems.filter(
             (item) => item.isChecked,
           ).length
 
-          console.log('체크된 아이템 개수 : ', checkedItemCount)
+          setCheckedItemCount((prevCounts) => ({
+            ...prevCounts,
+            [categoryId]: checkedItemCnt,
+          }))
 
           return { ...category, items: updatedItems }
         }
@@ -48,6 +72,8 @@ function useCheckChecklist() {
   }, [])
 
   const toggleCheckAll = useCallback(() => {
+    setIsEdit(true)
+
     setUpdatedChecklist((prev) => {
       if (!prev) return prev
       if (!prev.categories) return prev
@@ -66,6 +92,8 @@ function useCheckChecklist() {
   }, [isCheckAll])
 
   const foldAll = useCallback(() => {
+    setIsEdit(true)
+
     setUpdatedChecklist((prev) => {
       if (!prev) return prev
       if (!prev.categories) return prev
@@ -80,15 +108,40 @@ function useCheckChecklist() {
     setIsExpandedAll((prev) => !prev)
   }, [isExpandedAll])
 
+  const showUnCheckedItems = useCallback(() => {
+    setIsShowingUnchecked((prev) => !prev)
+
+    setVisibleChecklist((prev) => {
+      if (!prev) return prev
+      if (!prev.categories) return prev
+
+      if (isShowingUnchecked) {
+        const updatedCategories = prev.categories.map((category) => {
+          const updatedItems = category.items?.filter(
+            (item) => item.isChecked === false,
+          )
+          return { ...category, items: updatedItems }
+        })
+        console.log('필터링 결과 : ', updatedCategories)
+        return { ...prev, categories: updatedCategories }
+      } else {
+        return updatedChecklist
+      }
+    })
+  }, [isShowingUnchecked, updatedChecklist])
+
   const saveUpdates = useCallback(() => {
     // @TODO: 저장 로직
   }, [])
 
   return {
-    updatedChecklist,
+    data: isShowingUnchecked ? visibleChecklist : updatedChecklist,
+    checkedItemCount,
+    isEdit,
     toggleCheck,
     toggleCheckAll,
     foldAll,
+    showUnCheckedItems,
     saveUpdates,
   }
 }

@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { css } from '@emotion/react'
 
 import useCheckChecklist from '@/hooks/checklist/useCheckChecklist'
@@ -12,23 +12,42 @@ import Checkbox from '@shared/Checkbox'
 import Spacing from '@shared/Spacing'
 import Accordion from '@shared/Accordion'
 import Text from '@shared/Text'
+import ChecklistInfo from '@shared/ChecklistInfo'
 
 import { colors } from '@styles/colorPalette'
 import { spacing } from '@styles/sharedStyles'
+import FixedBottomButton from '@/components/shared/FixedBottomButton'
+import useChecklist from '@/hooks/checklist/useChecklist'
 
 function CheckListPage() {
+  const navigate = useNavigate()
   const {
-    updatedChecklist: checklist,
+    data: checklist,
+    checkedItemCount,
+    isEdit,
     toggleCheck,
     toggleCheckAll,
     foldAll,
+    showUnCheckedItems,
   } = useCheckChecklist()
+
+  const { update } = useChecklist()
 
   if (!checklist) {
     return null
   }
 
-  console.log('checklist : ', checklist)
+  const 수정되었는가 = isEdit
+
+  const handleSave = async () => {
+    if (!checklist || !checklist.id) {
+      return
+    }
+
+    update({ checklistId: checklist.id, newChecklist: checklist })
+    alert('체크리스트 수정이 완료되었습니다')
+    navigate(`/checklist/edit?checklistId=${checklist.id}`)
+  }
 
   return (
     <div css={container}>
@@ -48,6 +67,10 @@ function CheckListPage() {
 
       <Spacing size={spacing.contentsGap} />
 
+      <ChecklistInfo checklist={checklist} />
+
+      <Spacing size={spacing.contentsGap} />
+
       <Flex align="center" gap={20} css={actionButtonContainer}>
         <Checkbox
           id="checkAll"
@@ -59,12 +82,17 @@ function CheckListPage() {
           text="카테고리 전체 접기"
           onCheckChange={foldAll}
         />
-        <Checkbox id="changeMode" text="체크/편집 모드" />
+        <Checkbox
+          id="showUnChecked"
+          text="못챙긴 항목만 보기"
+          onCheckChange={showUnCheckedItems}
+        />
+        {/* <Checkbox id="changeMode" text="체크/편집 모드" /> */}
       </Flex>
 
-      <Spacing size={16} />
+      <Spacing size={spacing.contentsGap} />
 
-      <Flex dir="column">
+      <Flex dir="column" style={{ paddingBottom: '70px' }}>
         {checklist?.categories?.map((category: ChecklistCategory) => {
           const { id, name, isExpanded, items } = category
           return (
@@ -72,7 +100,9 @@ function CheckListPage() {
               <Accordion
                 key={id}
                 label={name}
-                subLabel={<Text>{`0 / ${items?.length}`}</Text>}
+                subLabel={
+                  <Text>{`${checkedItemCount[id] || 0} / ${items?.length}`}</Text>
+                }
                 isExpanded={isExpanded}
               >
                 {items?.map((item) => {
@@ -103,6 +133,12 @@ function CheckListPage() {
           )
         })}
       </Flex>
+
+      <FixedBottomButton
+        label="저장하기"
+        disabled={!수정되었는가}
+        onClick={handleSave}
+      />
     </div>
   )
 }
