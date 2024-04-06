@@ -18,6 +18,7 @@ import { colors } from '@styles/colorPalette'
 import { spacing } from '@styles/sharedStyles'
 import FixedBottomButton from '@/components/shared/FixedBottomButton'
 import useChecklist from '@/hooks/checklist/useChecklist'
+import Button from '@/components/shared/Button'
 
 function CheckListPage() {
   const navigate = useNavigate()
@@ -25,10 +26,14 @@ function CheckListPage() {
     data: checklist,
     checkedItemCount,
     isEdit,
+    isCheckAll,
+    isExpandedAll,
+    isShowingUnchecked,
     toggleCheck,
     toggleCheckAll,
     foldAll,
     showUnCheckedItems,
+    returnToInitialState,
   } = useCheckChecklist()
 
   const { update } = useChecklist()
@@ -75,18 +80,25 @@ function CheckListPage() {
         <Checkbox
           id="checkAll"
           text="전체 선택"
+          isChecked={isCheckAll}
           onCheckChange={toggleCheckAll}
         />
         <Checkbox
           id="foldAll"
-          text="카테고리 전체 접기"
+          text="전체 카테고리 접기"
+          isChecked={isExpandedAll}
           onCheckChange={foldAll}
         />
         <Checkbox
           id="showUnChecked"
           text="못챙긴 항목만 보기"
+          isChecked={isShowingUnchecked}
           onCheckChange={showUnCheckedItems}
         />
+        <Button css={buttonStyle} onClick={returnToInitialState}>
+          초기상태로 돌아가기
+        </Button>
+
         {/* <Checkbox id="changeMode" text="체크/편집 모드" /> */}
       </Flex>
 
@@ -115,7 +127,7 @@ function CheckListPage() {
                       >
                         <Flex align="center" gap={4}>
                           <Checkbox
-                            defaultChecked={item.isChecked}
+                            isChecked={item.isChecked}
                             checked={item.isChecked}
                             onCheckChange={() => toggleCheck(id, item.id)}
                           />
@@ -154,6 +166,19 @@ const actionButtonContainer = css`
   background: ${colors.white};
   border: 1px solid ${colors.gray200};
   border-radius: 10px;
+`
+
+const buttonStyle = css`
+  border: 1px solid ${colors.gray200};
+  background-color: ${colors.white};
+  color: ${colors.black};
+  font-weight: 400;
+  margin-left: auto;
+
+  &:hover {
+    background-color: ${colors.gray20};
+    color: ${colors.blue980};
+  }
 `
 
 const checklistItemStyles = css`

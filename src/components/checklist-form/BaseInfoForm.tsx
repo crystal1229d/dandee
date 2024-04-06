@@ -46,7 +46,7 @@ function BaseInfoForm({ formData, onFormDataChange }: ChecklistFormProps) {
         <Checkbox
           id="inUse"
           text="사용하기"
-          defaultChecked={formData.inUse}
+          isChecked={formData.inUse}
           onCheckChange={handleCheckboxClick}
         />
       </Flex>

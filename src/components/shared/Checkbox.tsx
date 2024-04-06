@@ -1,14 +1,13 @@
+import { forwardRef, InputHTMLAttributes, useState, useEffect } from 'react'
 import { css } from '@emotion/react'
-
 import { colors } from '@/styles/colorPalette'
 import Flex from '@shared/Flex'
 import Text from '@shared/Text'
-import { forwardRef, InputHTMLAttributes, useState } from 'react'
 
 interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   text?: string
-  defaultChecked?: boolean
-  onCheckChange?: () => void
+  isChecked?: boolean // isChecked prop 추가
+  onCheckChange?: (checked: boolean) => void
 }
 
 const containerStyle = css`
@@ -40,7 +39,6 @@ const containerStyle = css`
     left: 7px;
     top: 7px;
     content: '✔';
-
     color: ${colors.white};
     border: none;
     opacity: 0;
@@ -61,14 +59,19 @@ const containerStyle = css`
 `
 
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
-  { defaultChecked, text, onCheckChange, ...props },
+  { isChecked: propChecked, text, onCheckChange, ...props },
   ref,
 ) {
-  const [isChecked, setIsChecked] = useState(defaultChecked || false)
+  const [isChecked, setIsChecked] = useState(propChecked || false)
+
+  useEffect(() => {
+    setIsChecked(propChecked || false) // prop 변경 시 isChecked 상태 업데이트
+  }, [propChecked])
 
   const handleCheck = () => {
-    setIsChecked((prev) => !prev)
-    if (onCheckChange) onCheckChange()
+    const newChecked = !isChecked
+    setIsChecked(newChecked)
+    if (onCheckChange) onCheckChange(newChecked)
   }
 
   return (
