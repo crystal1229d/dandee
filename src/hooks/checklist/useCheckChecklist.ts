@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Checklist } from '@/models/checklist'
+import { Checklist } from '@models/checklist'
 import useDetailedChecklistInUse from './useDetailedChecklistInUse'
 
 function useCheckChecklist() {
+  // @TODO: 편집/체크모드 ?
+
   const { data, isLoading } = useDetailedChecklistInUse() as {
     data: Checklist
     isLoading: boolean
@@ -18,8 +20,6 @@ function useCheckChecklist() {
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false)
   const [isExpandedAll, setIsExpandedAll] = useState<boolean>(false)
   const [isShowingUnchecked, setIsShowingUnchecked] = useState<boolean>(false)
-  // @TODO: 편집/체크모드 ?
-  // @TODO: 여러 개가 체크됐을 경우 ? (예: 못챙긴 항목만 보기 => 전체 선택 시 못챙긴항목 체크해제?)
 
   useEffect(() => {
     if (data != null && !isLoading) {

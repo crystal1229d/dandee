@@ -5,12 +5,13 @@ import AuthRoute from './components/auth/AuthRoute'
 
 import Navbar from '@shared/Navbar'
 import HomePage from '@pages/Home'
-import CheckListPage from '@pages/checklist'
+import CheckListInUsePage from '@pages/ChecklistInUse'
 import ChecklistsPage from '@pages/Checklists'
 import SigninPage from '@pages/Signin'
 import MyPage from '@pages/My'
 import DevPage from '@pages/Dev'
-import ChecklistFormPage from '@pages/ChecklistForm'
+import ChecklistEditFormPage from './pages/ChecklistEditForm'
+import ChecklistCreateFormPage from './pages/ChecklistCreateForm'
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
             path="/checklist"
             element={
               <AuthRoute>
-                <CheckListPage />
+                <CheckListInUsePage />
               </AuthRoute>
             }
           />
@@ -39,7 +40,7 @@ function App() {
             path="/checklist/new"
             element={
               <AuthRoute>
-                <ChecklistFormPage />
+                <ChecklistCreateFormPage />
               </AuthRoute>
             }
           />
@@ -47,7 +48,7 @@ function App() {
             path="/checklist/edit"
             element={
               <AuthRoute>
-                <ChecklistFormPage />
+                <ChecklistEditFormPage />
               </AuthRoute>
             }
           />

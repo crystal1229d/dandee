@@ -14,7 +14,7 @@ import FixedBottomButton from '@shared/FixedBottomButton'
 import BaseInfoForm from '@components/checklist-form/BaseInfoForm'
 import CategoryForm from '@components/checklist-form/CategoryForm'
 
-function ChecklistFormPage() {
+function ChecklistCreateFormPage() {
   const navigate = useNavigate()
 
   const { checklistId = '' } = parse(window.location.search, {
@@ -23,13 +23,13 @@ function ChecklistFormPage() {
     checklistId: string
   }
 
-  // useEffect(() => {
-  //   if (checklistId == null) {
-  //     window.history.back()
-  //   }
-  // }, [checklistId])
+  useEffect(() => {
+    if (checklistId == null) {
+      window.history.back()
+    }
+  }, [checklistId])
 
-  const { update } = useChecklist()
+  const { create } = useChecklist()
 
   const { data, isLoading } = useChecklistInDetail({ checklistId }) as {
     data: Checklist
@@ -46,31 +46,17 @@ function ChecklistFormPage() {
   const 저장가능한가 = true
 
   const handleFormSubmit = async () => {
-    console.log('submit : ', tempForm)
-    // 생성
-    // const newChecklist = {
-    //   tempForm,
-    // }
-    // const success = await create(newChecklist)
-    // if (success === true) {
-    //   navigate('/checklists') // @TODO: 완성된 체크리스트 페이지로 이동
-    // }
-
-    update({ checklistId, newChecklist: tempForm })
-
-    alert('체크리스트 수정이 완료되었습니다')
-
-    navigate(`/checklist/edit?checklistId=${checklistId}`)
+    console.log(tempForm)
+    // update({ checklistId, newChecklist: tempForm })
+    // alert('체크리스트 수정이 완료되었습니다')
+    // navigate(`/checklist/edit?checklistId=${checklistId}`)
   }
-
-  const pageTitle = checklistId === '' ? `생성` : `편집`
-  const buttonLabel = checklistId === '' ? `생성하기` : `저장하기`
 
   return (
     <div style={{ paddingBottom: '70px' }}>
       <Title
-        title={`체크리스트 ${pageTitle}`}
-        subTitle={`체크리스트를 내 여행계획에 맞게 ${pageTitle}해보세요`}
+        title="체크리스트 만들기"
+        subTitle="체크리스트를 내 여행계획에 맞게 만들어보세요"
       />
       <Spacing size={10} />
 
@@ -82,7 +68,7 @@ function ChecklistFormPage() {
       </Flex>
 
       <FixedBottomButton
-        label={buttonLabel}
+        label="저장하기"
         disabled={!저장가능한가}
         onClick={handleFormSubmit}
       />
@@ -90,4 +76,4 @@ function ChecklistFormPage() {
   )
 }
 
-export default ChecklistFormPage
+export default ChecklistCreateFormPage

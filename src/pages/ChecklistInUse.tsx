@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { css } from '@emotion/react'
 
 import useCheckChecklist from '@/hooks/checklist/useCheckChecklist'
+import useChecklist from '@/hooks/checklist/useChecklist'
+
 import { ChecklistCategory } from '@models/checklist'
 
 import Title from '@shared/Title'
@@ -13,14 +15,12 @@ import Spacing from '@shared/Spacing'
 import Accordion from '@shared/Accordion'
 import Text from '@shared/Text'
 import ChecklistInfo from '@shared/ChecklistInfo'
-
+import FixedBottomButton from '@shared/FixedBottomButton'
+import Button from '@shared/Button'
 import { colors } from '@styles/colorPalette'
 import { spacing } from '@styles/sharedStyles'
-import FixedBottomButton from '@/components/shared/FixedBottomButton'
-import useChecklist from '@/hooks/checklist/useChecklist'
-import Button from '@/components/shared/Button'
 
-function CheckListPage() {
+function CheckListInUsePage() {
   const navigate = useNavigate()
   const {
     data: checklist,
@@ -195,4 +195,4 @@ const textStyles = css`
   line-height: 20px;
 `
 
-export default CheckListPage
+export default CheckListInUsePage

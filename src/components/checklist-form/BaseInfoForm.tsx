@@ -1,10 +1,11 @@
+import React from 'react'
+
 import { Checklist } from '@models/checklist'
 
 import Checkbox from '@shared/Checkbox'
 import Flex from '@shared/Flex'
 import Spacing from '@shared/Spacing'
 import TextField from '@shared/TextField'
-import React from 'react'
 
 interface ChecklistFormProps {
   formData: Checklist
