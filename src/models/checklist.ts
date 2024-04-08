@@ -27,3 +27,9 @@ export interface ChecklistItem {
   isChecked?: boolean
   categoryId: string
 }
+
+export interface ChecklistForm {
+  name: string
+  inUse: boolean
+  categories?: ChecklistCategory[]
+}

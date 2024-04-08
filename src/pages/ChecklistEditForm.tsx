@@ -11,8 +11,8 @@ import Spacing from '@shared/Spacing'
 import Title from '@shared/Title'
 import Flex from '@shared/Flex'
 import FixedBottomButton from '@shared/FixedBottomButton'
-import BaseInfoForm from '@components/checklist-form/BaseInfoForm'
-import CategoryForm from '@components/checklist-form/CategoryForm'
+import BaseInfoForm from '@components/checklist-edit-form/BaseInfoForm'
+import CategoryForm from '@components/checklist-edit-form/CategoryForm'
 
 function ChecklistEditFormPage() {
   const navigate = useNavigate()

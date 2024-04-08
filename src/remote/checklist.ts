@@ -1,19 +1,23 @@
 import { COLLECTIONS } from '@/constants'
 import { db } from '@/lib/firebase'
-import { Checklist } from '@/models/checklist'
+import { Checklist, ChecklistForm } from '@/models/checklist'
 import {
+  addDoc,
   collection,
   deleteDoc,
   doc,
+  DocumentData,
+  DocumentReference,
   getDocs,
   limit,
   orderBy,
   query,
   QuerySnapshot,
-  setDoc,
+  serverTimestamp,
   startAfter,
   updateDoc,
   where,
+  writeBatch,
 } from 'firebase/firestore'
 
 // 체크리스트 전체 목록 조회
@@ -61,61 +65,37 @@ export async function getChecklists({
 
 // 체크리스트 생성 : 하위내역(카테고리, 아이템) 모두 추가
 // @TODO: '사용중' 인 체크리스트 최소 0개, 최대1개만 존재 가능
+// @TODO: createdAt, usedAt 필드 생성안되는 문제
 export async function createChecklist({
   checklist,
 }: {
-  checklist: Omit<Checklist, 'id'>
+  checklist: Partial<Checklist>
 }) {
   try {
-    // 체크리스트 생성
-    const checklistRef = doc(db, COLLECTIONS.CHECKLIST)
-    const newChecklist = {
-      name: checklist.name,
-      createdAt: checklist.createdAt,
-      usedAt: checklist.usedAt,
-      inUse: checklist.inUse,
-      type: checklist.type,
-      userId: checklist.userId,
-    }
-    await setDoc(checklistRef, newChecklist)
+    const batch = writeBatch(db)
 
-    const newChecklistId = checklistRef.id
+    const checklistCollectionRef = collection(db, COLLECTIONS.CHECKLIST)
 
-    if (checklist?.categories && checklist.categories.length > 0) {
-      // 카테고리 생성
-      checklist?.categories?.map(async (category) => {
-        const categoryRef = doc(
-          db,
-          COLLECTIONS.CHECKLIST_CATEGORY,
-          newChecklistId,
-        )
-        const newCategory = {
-          checklistId: newChecklistId,
-          name: category.name,
-          isExpanded: false,
-          order: category.order,
-        }
-        await setDoc(categoryRef, newCategory)
+    const newChecklistRef: DocumentReference<DocumentData> = await addDoc(
+      checklistCollectionRef,
+      {
+        ...checklist,
+        type: 'CUSTOM_TEMPLATE',
+        createdAt: serverTimestamp(),
+        usedAt: serverTimestamp(),
+      },
+    )
 
-        const newCategoryId = categoryRef.id
+    const checklistId = newChecklistRef.id
 
-        // 아이템 생성
-        category.items?.map(async (item) => {
-          const itemRef = doc(
-            categoryRef,
-            COLLECTIONS.CHECKLIST_ITEM,
-            newCategoryId,
-          )
-          const newItem = {
-            categoryId: newCategoryId,
-            name: item.name,
-            isChecked: false,
-            order: item.order,
-          }
-          await setDoc(itemRef, newItem)
-        })
-      })
-    }
+    const updatedChecklist = { ...checklist, id: checklistId }
+
+    const updatedChecklistRef = doc(db, COLLECTIONS.CHECKLIST, checklistId)
+    batch.set(updatedChecklistRef, updatedChecklist)
+
+    await batch.commit()
+
+    return updatedChecklist
   } catch (error) {
     throw error
   }

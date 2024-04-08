@@ -48,15 +48,16 @@ function useChecklist() {
 
   // 체크리스트 생성
   const { mutateAsync: create } = useMutation(
-    async (newChecklist: Omit<Checklist, 'id'>) => {
+    async (newChecklist: Partial<Checklist>) => {
       if (user == null) {
         throw new Error('로그인 필요')
       }
       await createChecklist({
         checklist: {
           ...newChecklist,
-          createdAt: new Date(),
-          usedAt: new Date(),
+          type: 'CUSTOM_TEMPLATE',
+          // createdAt: new Date(),
+          // usedAt: new Date(),
           userId: user?.uid as string,
         },
       })
