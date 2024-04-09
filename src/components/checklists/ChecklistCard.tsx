@@ -87,7 +87,7 @@ function ChecklistCard({ checklist }: { checklist: Checklist }) {
               생성 :{format(createdAt, 'yyyy-MM-dd')}
             </Text>
             <Text typography="t7" color="gray400">
-              마지막 사용 : {format(usedAt, 'yyyy-MM-dd')}
+              {usedAt && `마지막 사용 : ${format(usedAt, 'yyyy-MM-dd')}`}
             </Text>
           </Flex>
         </Flex>

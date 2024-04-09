@@ -4,8 +4,8 @@ export interface Checklist {
   type: 'DEFAULT_TEMPLATE' | 'CUSTOM_TEMPLATE' | 'SHARE_TEMPLATE'
   inUse: boolean
   userId: string
-  createdAt: Date
-  usedAt: Date
+  createdAt: string
+  usedAt: string
 
   categories?: ChecklistCategory[]
 }

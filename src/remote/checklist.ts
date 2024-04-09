@@ -1,19 +1,15 @@
 import { COLLECTIONS } from '@/constants'
 import { db } from '@/lib/firebase'
-import { Checklist, ChecklistForm } from '@/models/checklist'
+import { Checklist } from '@/models/checklist'
 import {
-  addDoc,
   collection,
   deleteDoc,
   doc,
-  DocumentData,
-  DocumentReference,
   getDocs,
   limit,
   orderBy,
   query,
   QuerySnapshot,
-  serverTimestamp,
   startAfter,
   updateDoc,
   where,
@@ -64,34 +60,47 @@ export async function getChecklists({
 }
 
 // 체크리스트 생성 : 하위내역(카테고리, 아이템) 모두 추가
-// @TODO: '사용중' 인 체크리스트 최소 0개, 최대1개만 존재 가능
-// @TODO: createdAt, usedAt 필드 생성안되는 문제
 export async function createChecklist({
   checklist,
+  userId,
 }: {
   checklist: Partial<Checklist>
+  userId: string
 }) {
   try {
     const batch = writeBatch(db)
 
+    // 1. 새로운 CHECKLIST 문서 생성
     const checklistCollectionRef = collection(db, COLLECTIONS.CHECKLIST)
 
-    const newChecklistRef: DocumentReference<DocumentData> = await addDoc(
-      checklistCollectionRef,
-      {
-        ...checklist,
-        type: 'CUSTOM_TEMPLATE',
-        createdAt: serverTimestamp(),
-        usedAt: serverTimestamp(),
-      },
-    )
+    const newChecklistRef = doc(checklistCollectionRef)
+    batch.set(newChecklistRef, {
+      ...checklist,
+      type: 'CUSTOM_TEMPLATE',
+    })
 
+    // 2. 생성한 문서에 id 필드 추가
     const checklistId = newChecklistRef.id
 
     const updatedChecklist = { ...checklist, id: checklistId }
 
     const updatedChecklistRef = doc(db, COLLECTIONS.CHECKLIST, checklistId)
     batch.set(updatedChecklistRef, updatedChecklist)
+
+    // 3. '사용중'인 체크리스트 최소 0개, 최대1개만 존재 가능 => 다른 '사용중'인 체크리스트의 사용중 상태 해제
+    if (checklist.inUse === true) {
+      const inUseQuery = query(
+        collection(db, COLLECTIONS.CHECKLIST),
+        where('userId', '==', userId),
+        where('inUse', '==', true),
+      )
+      const inUseSnapshot = await getDocs(inUseQuery)
+      if (!inUseSnapshot.empty) {
+        const inUseDoc = inUseSnapshot.docs[0]
+        const inUseRef = doc(db, COLLECTIONS.CHECKLIST, inUseDoc.id)
+        batch.update(inUseRef, { inUse: false })
+      }
+    }
 
     await batch.commit()
 
@@ -150,8 +159,8 @@ export async function removeChecklist({
 }) {
   try {
     const checklistQuery = query(
-      collection(db, COLLECTIONS.CHECKLIST, checklistId),
-      // where('id', '==', checklistId),
+      collection(db, COLLECTIONS.CHECKLIST),
+      where('id', '==', checklistId),
       where('userId', '==', userId),
     )
     const checklistSnapshot = await getDocs(checklistQuery)
@@ -163,6 +172,7 @@ export async function removeChecklist({
 
     return deleteDoc(checklistRef)
   } catch (error) {
+    console.log(error)
     throw error
   }
 }

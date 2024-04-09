@@ -11,6 +11,7 @@ import {
 import { Checklist } from '@models/checklist'
 import { useDialogContext } from '@contexts/DialogContext'
 import useUser from '@hooks/auth/useUser'
+import { format } from 'date-fns'
 
 function useChecklist() {
   const user = useUser()
@@ -56,10 +57,13 @@ function useChecklist() {
         checklist: {
           ...newChecklist,
           type: 'CUSTOM_TEMPLATE',
-          // createdAt: new Date(),
-          // usedAt: new Date(),
+          createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ssxxx"),
+          usedAt: newChecklist.inUse
+            ? format(new Date(), "yyyy-MM-dd'T'HH:mm:ssxxx")
+            : '',
           userId: user?.uid as string,
         },
+        userId: user.uid,
       })
 
       return true
