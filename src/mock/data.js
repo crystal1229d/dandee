@@ -1,3 +1,4 @@
+// 체크리스트
 export const CHECKLISTS = [
   {
     id: '',
@@ -305,5 +306,39 @@ export const CHECKLIST_FORM = [
     label: '사용여부',
     required: true,
     type: 'CHECKBOX',
+  },
+]
+
+// 여행계획
+export const ITINERARY = [
+  {
+    id: '',
+    name: '2024 호주 여행',
+    departure_date: '2024.04.13.토',
+    arrival_date: '2024.05.08.수',
+    total_days: 26,
+    type: 'CUSTOM_ITINERARY',
+    link: null,
+    creatorId: 'r1TAHIKorqPVhXAfoJRjuwC2FD33',
+    joinedUsers: [],
+    createdAt: '2023-03-23T00:00:00+09:00',
+
+    schedule: null,
+    budget: null,
+  },
+  {
+    id: '',
+    name: '테스트 일정',
+    departure_date: '2024.04.13.토',
+    arrival_date: '2024.04.14.일',
+    total_days: 2,
+    type: 'CUSTOM_ITINERARY',
+    link: null,
+    createUserId: 'r1TAHIKorqPVhXAfoJRjuwC2FD33',
+    joinedUsers: [],
+    createdAt: '2023-04-10T00:00:00+09:00',
+
+    schedule: null,
+    expense: null,
   },
 ]

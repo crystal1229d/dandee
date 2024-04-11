@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { css } from '@emotion/react'
+import styled from '@emotion/styled'
 
 import useCheckChecklist from '@/hooks/checklist/useCheckChecklist'
 import useChecklist from '@/hooks/checklist/useChecklist'
@@ -17,6 +18,7 @@ import Text from '@shared/Text'
 import ChecklistInfo from '@shared/ChecklistInfo'
 import FixedBottomButton from '@shared/FixedBottomButton'
 import Button from '@shared/Button'
+
 import { colors } from '@styles/colorPalette'
 import { spacing } from '@styles/sharedStyles'
 
@@ -55,7 +57,7 @@ function CheckListInUsePage() {
   }
 
   return (
-    <div css={container}>
+    <Container>
       <Title
         title="체크리스트"
         subTitle="여행지에서 난감하지 않게, 꼼꼼하게 챙겨보세요"
@@ -64,9 +66,6 @@ function CheckListInUsePage() {
       <Flex gap={4}>
         <ContentsButtonBar>
           <Link to="/checklists">체크리스트 관리</Link>
-        </ContentsButtonBar>
-        <ContentsButtonBar>
-          <Link to="/checklists">체크리스트 불러오기</Link>
         </ContentsButtonBar>
       </Flex>
 
@@ -151,11 +150,11 @@ function CheckListInUsePage() {
         disabled={!수정되었는가}
         onClick={handleSave}
       />
-    </div>
+    </Container>
   )
 }
 
-const container = css`
+const Container = styled.div`
   height: calc(100vh - 81px);
 `
 

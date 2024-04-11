@@ -37,7 +37,7 @@ function Navbar() {
   const renderButtons = useCallback(() => {
     return (
       <Flex align="center" gap={25}>
-        <StyledLink to="/plan">계획</StyledLink>
+        <StyledLink to="/itineraries">계획</StyledLink>
         <StyledLink to="/checklist">체크리스트</StyledLink>
         {user && <span onClick={signout}>로그아웃</span>}
         {showSigninButton && !user && (
