@@ -18,7 +18,7 @@ function ChecklistsPage() {
   const { data: checklists, hasNextPage, loadMore } = useChecklist()
 
   return (
-    <div css={container}>
+    <div>
       <Title
         title="체크리스트 목록"
         subTitle="체크리스트를 편집하거나 불러올 수 있어요"
@@ -50,21 +50,17 @@ function ChecklistsPage() {
   )
 }
 
-const container = css`
-  background: ${colors.gray100};
-`
-
 const actionButtonContainer = css`
   height: 63px;
   margin: 0 ${spacing.pageLeftRight};
   background: ${colors.white};
-  border: 2px solid ${colors.white};
+  border: 1px solid ${colors.gray200};
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.1s ease;
 
   &:hover {
-    border: 2px solid ${colors.gray200};
+    border: 1px solid ${colors.gray400};
   }
 `
 

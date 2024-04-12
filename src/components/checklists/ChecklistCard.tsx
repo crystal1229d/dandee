@@ -110,14 +110,15 @@ const containerStyle = css`
   height: 128px;
   margin: 0 ${spacing.pageLeftRight};
   padding: ${spacing.pageTopDown} ${spacing.pageLeftRight};
+
   background: ${colors.white};
-  border: 2px solid ${colors.white};
+  border: 1px solid ${colors.gray200};
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.1s ease;
 
   &:hover {
-    border: 2px solid ${colors.gray200};
+    border: 1px solid ${colors.gray400};
   }
 `
 
