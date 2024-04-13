@@ -1,5 +1,10 @@
+import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from '@emotion/styled'
+import InfiniteScroll from 'react-infinite-scroll-component'
+
+import { Itinerary } from '@models/itinerary'
+import ItineraryCard from '@components/itineraries/ItineraryCard'
 
 import ContentsButtonBar from '@shared/ContentsButtonBar'
 import Flex from '@shared/Flex'
@@ -7,15 +12,13 @@ import Spacing from '@shared/Spacing'
 import Title from '@shared/Title'
 
 import { spacing } from '@styles/sharedStyles'
-import useItinerary from '@/hooks/itinerary/useItinerary'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import { Itinerary } from '@/models/itinerary'
-import React from 'react'
-import ItineraryCard from '@/components/itineraries/ItineraryCard'
+import useItineraries from '@/hooks/itinerary/useItineraries'
 
 function ItinerariesPage() {
-  const { itineraries, hasNextPage, loadMore } = useItinerary()
+  const { itineraries, hasNextPage, loadMore } = useItineraries()
+
   console.log(itineraries)
+
   return (
     <Container>
       <Title
@@ -35,7 +38,7 @@ function ItinerariesPage() {
         <InfiniteScroll
           dataLength={itineraries?.length ?? 0}
           hasMore={hasNextPage}
-          loader={<>더보기</>}
+          loader={<></>}
           next={loadMore}
           scrollThreshold="100px"
           style={{ overflowY: 'hidden' }}

@@ -1,44 +1,24 @@
-import { getItineraries } from '@/remote/itinerary'
-import { useCallback } from 'react'
-import { useInfiniteQuery } from 'react-query'
+import { getItinerary } from '@/remote/itinerary'
+import { useQuery } from 'react-query'
 import useUser from '../auth/useUser'
 
-function useItinerary() {
+function useItinerary({ itineraryId }: { itineraryId: string }) {
   const user = useUser()
 
-  // 모든 여행일정 조회
-  const {
-    data,
-    hasNextPage = false,
-    fetchNextPage,
-    isFetching,
-  } = useInfiniteQuery(
-    ['itineraries', user?.uid],
-    ({ pageParam }) =>
-      getItineraries({ userId: user?.uid as string, pageParam }),
+  // 단일 여행계획 조회
+  const { data, isLoading } = useQuery(
+    ['itinerary', itineraryId, user?.uid],
+    () => getItinerary({ itineraryId, userId: user?.uid as string }),
     {
       enabled: user != null,
-      getNextPageParam: (snapshot) => {
-        return snapshot.lastVisible
-      },
     },
   )
 
-  const loadMore = useCallback(() => {
-    if (hasNextPage === false || isFetching) {
-      return
-    }
-
-    fetchNextPage()
-  }, [fetchNextPage, hasNextPage, isFetching])
-
-  const itineraries = data?.pages.map(({ itineraries }) => itineraries).flat()
+  const itenerary = data?.itinerary
 
   return {
-    itineraries,
-    loadMore,
-    isFetching,
-    hasNextPage,
+    data: itenerary,
+    isLoading,
   }
 }
 

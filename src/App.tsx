@@ -13,6 +13,9 @@ import DevPage from '@pages/Dev'
 import ChecklistEditFormPage from './pages/ChecklistEditForm'
 import ChecklistCreateFormPage from './pages/ChecklistCreateForm'
 import ItinerariesPage from './pages/Itineraries'
+import ItineraryCreateForm from './pages/ItineraryCreateForm'
+import ItineraryPage from './pages/Itinerary'
+import ItineraryCreateFormPage from './pages/ItineraryCreateForm'
 
 function App() {
   return (
@@ -58,6 +61,22 @@ function App() {
             element={
               <AuthRoute>
                 <ItinerariesPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/itinerary"
+            element={
+              <AuthRoute>
+                <ItineraryPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/itinerary/new"
+            element={
+              <AuthRoute>
+                <ItineraryCreateFormPage />
               </AuthRoute>
             }
           />
