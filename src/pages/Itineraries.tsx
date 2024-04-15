@@ -22,7 +22,7 @@ function ItinerariesPage() {
   return (
     <Container>
       <Title
-        title="여행계획"
+        title="여행계획 목록"
         subTitle="여행일정, 경비관리, 체크리스트까지 한번에 쉽게 관리해보세요"
       />
 
