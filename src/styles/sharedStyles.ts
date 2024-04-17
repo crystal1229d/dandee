@@ -13,4 +13,5 @@ export const zIndex = {
   dimmed: 15,
   confirm: 50,
   modal: 50,
+  calendar: 40,
 }

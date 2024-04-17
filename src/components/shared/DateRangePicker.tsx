@@ -1,4 +1,3 @@
-import { colors } from '@/styles/colorPalette'
 import styled from '@emotion/styled'
 import { DateRange, DayPicker } from 'react-day-picker'
 import { ko } from 'date-fns/locale'
@@ -9,6 +8,8 @@ import {
   isSameDay,
   parseISO,
 } from 'date-fns'
+
+import { colors } from '@styles/colorPalette'
 
 interface DateRangePickerProps {
   startDate?: string
@@ -52,8 +53,8 @@ function DateRangePicker({
       <DayPicker
         locale={ko}
         mode="range"
-        numberOfMonths={5}
         defaultMonth={today}
+        fromMonth={today}
         onSelect={handleDayClick}
         selected={selected}
         disabled={{
@@ -65,25 +66,32 @@ function DateRangePicker({
 }
 
 const Container = styled.div`
-  padding-bottom: 80px;
-
   .rdp-month {
     position: relative;
     width: 100%;
     text-align: center;
-    padding: 60px 0px 30px;
+    padding: 100px 0px 30px;
   }
 
   .rdp-caption {
+    width: 95%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
     position: absolute;
     top: 25px;
     left: 20px;
+
     color: ${colors.black};
     font-weight: bold;
+    font-size: 1.4rem;
+    letter-spacing: 0.6rem;
   }
 
-  .rdp-nav {
-    display: none;
+  .rdp-nav > button:first-of-type {
+    margin-right: 15px;
+    font-size: 1.3rem;
   }
 
   .rdp-table {
