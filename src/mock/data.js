@@ -310,7 +310,7 @@ export const CHECKLIST_FORM = [
 ]
 
 // 여행계획
-export const ITINERARY = [
+export const PLAN = [
   {
     id: '',
     name: '2024 호주 여행',
@@ -323,7 +323,43 @@ export const ITINERARY = [
     joinedUsers: [],
     createdAt: '2023-03-23T00:00:00+09:00',
 
-    schedule: null,
+    plan: {
+      id: 'iti123456',
+      itinerary: [
+        {
+          id: 'd10012345',
+          date: '2024-04-25',
+          day: 1,
+          activities: [
+            {
+              id: 'activity001',
+              order: 1,
+              creatorId: 'r1TAHIKorqPVhXAfoJRjuwC2FD33',
+              time: '11:00',
+              tag: ['할일'],
+              activity: '브런치',
+              description: '커피, 생크림 토스트',
+            },
+            {
+              id: 'activity002',
+              order: 2,
+              creatorId: 'r1TAHIKorqPVhXAfoJRjuwC2FD33',
+              time: '13:00',
+              tag: ['숙소', '체크리스트'],
+              activity: '호텔 체크인',
+              location: {
+                pointGeolocation: {
+                  x: 139.70167,
+                  y: 35.6949,
+                },
+                directions: '신주쿠 역 O-2 출구에서 도보 3분',
+              },
+            },
+          ],
+        },
+      ],
+    },
+    checklistId: 'eGsQQ0i7y6ttoJUDg6Ip',
     expense: null,
   },
   {
@@ -338,7 +374,8 @@ export const ITINERARY = [
     joinedUsers: [],
     createdAt: '2023-04-10T00:00:00+09:00',
 
-    schedule: null,
+    plan: null,
+    checklistId: null,
     expense: null,
   },
   {
@@ -353,7 +390,8 @@ export const ITINERARY = [
     joinedUsers: [],
     createdAt: '2023-06-10T00:00:00+09:00',
 
-    schedule: null,
+    plan: null,
+    checklistId: null,
     expense: null,
   },
 ]

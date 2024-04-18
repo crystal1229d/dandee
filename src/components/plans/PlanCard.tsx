@@ -3,7 +3,7 @@ import { css } from '@emotion/react'
 import qs from 'qs'
 import { differenceInDays, format, isPast } from 'date-fns'
 
-import { Itinerary } from '@/models/itinerary'
+import { Plan } from '@models/plan'
 import { useDialogContext } from '@contexts/DialogContext'
 
 import { spacing } from '@styles/sharedStyles'
@@ -14,11 +14,11 @@ import Spacing from '@shared/Spacing'
 import Tag from '@shared/Tag'
 import Button from '@shared/Button'
 
-function ItineraryCard({ itinerary }: { itinerary: Itinerary }) {
-  const { id, name, departure_date, arrival_date, total_days } = itinerary
+function PlanCard({ plan }: { plan: Plan }) {
+  const { id, name, departure_date, arrival_date, total_days } = plan
   const { open } = useDialogContext()
 
-  const params = qs.stringify({ itineraryId: id }, { addQueryPrefix: true })
+  const params = qs.stringify({ planId: id }, { addQueryPrefix: true })
 
   const handleClickShare = () => {
     open({
@@ -65,7 +65,7 @@ function ItineraryCard({ itinerary }: { itinerary: Itinerary }) {
 
   return (
     <Flex dir="row" css={containerStyle}>
-      <Link to={`/itinerary/${params}`} style={{ flex: 1 }}>
+      <Link to={`/plan${params}`} style={{ flex: 1 }}>
         <Flex dir="column" gap={30}>
           <Flex dir="row" gap={10}>
             <Text typography="t4">{name}</Text>
@@ -131,4 +131,4 @@ const buttonStyle = css`
   }
 `
 
-export default ItineraryCard
+export default PlanCard

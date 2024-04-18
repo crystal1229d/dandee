@@ -10,8 +10,9 @@ export const spacing = {
 
 export const zIndex = {
   navbar: 10,
+  multiTabScrollButton: 10,
   dimmed: 15,
+  calendar: 40,
   confirm: 50,
   modal: 50,
-  calendar: 40,
 }

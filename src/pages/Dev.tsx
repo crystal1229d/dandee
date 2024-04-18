@@ -1,5 +1,5 @@
 import CheckListAddButton from '@/components/dev/CheckListAddButton'
-import ItineraryAddButton from '@/components/dev/ItineraryAddButton'
+import PlanAddButton from '@/components/dev/PlanAddButton'
 import Flex from '@shared/Flex'
 
 function DevPage() {
@@ -12,7 +12,7 @@ function DevPage() {
       style={{ paddingTop: '30px' }}
     >
       <CheckListAddButton />
-      <ItineraryAddButton />
+      <PlanAddButton />
     </Flex>
   )
 }

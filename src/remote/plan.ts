@@ -11,28 +11,28 @@ import {
 
 import { COLLECTIONS } from '@constants'
 import { db } from '@lib/firebase'
-import { Itinerary } from '@models/itinerary'
+import { Plan } from '@/models/plan'
 
 // 여행일정 전체 목록 조회
 // @TODO: 공유받은 여행일정도 조회
-export async function getItineraries({
+export async function getPlans({
   userId,
   pageParam,
 }: {
   userId: string
-  pageParam?: QuerySnapshot<Itinerary>
+  pageParam?: QuerySnapshot<Plan>
 }) {
-  const itineraryQuery =
+  const plansQuery =
     pageParam == null
       ? query(
-          collection(db, COLLECTIONS.ITINERARY),
+          collection(db, COLLECTIONS.PLAN),
           where('creatorId', '==', userId),
           // where('joinedUsers', 'array-contains', userId),
           orderBy('departure_date', 'desc'),
           limit(4),
         )
       : query(
-          collection(db, COLLECTIONS.ITINERARY),
+          collection(db, COLLECTIONS.PLAN),
           where('creatorId', '==', userId),
           // where('joinedUsers', 'array-contains', userId),
           orderBy('departure_date', 'desc'),
@@ -40,49 +40,48 @@ export async function getItineraries({
           limit(4),
         )
 
-  const itinerariesSnapshot = await getDocs(itineraryQuery)
+  const plansSnapshot = await getDocs(plansQuery)
 
-  const itineraries = itinerariesSnapshot.docs.map(
+  const plans = plansSnapshot.docs.map(
     (doc) =>
       ({
         id: doc.id,
         ...doc.data(),
-      }) as Itinerary,
+      }) as Plan,
   )
 
-  const lastVisible =
-    itinerariesSnapshot.docs[itinerariesSnapshot.docs.length - 1]
+  const lastVisible = plansSnapshot.docs[plansSnapshot.docs.length - 1]
 
   return {
-    itineraries,
+    plans,
     lastVisible,
   }
 }
 
 // 특정 여행계획 상세 조회
 // @TODO: 공유받은 여행일정도 조회
-export async function getItinerary({
-  itineraryId,
+export async function getPlan({
+  planId,
   userId,
 }: {
-  itineraryId: string
+  planId: string
   userId: string
 }) {
-  const itineraryQuery = query(
-    collection(db, COLLECTIONS.ITINERARY),
-    where('id', '==', itineraryId),
+  const planQuery = query(
+    collection(db, COLLECTIONS.PLAN),
+    where('id', '==', planId),
     // where('joinedUsers', 'array-contains', userId),
     where('creatorId', '==', userId),
   )
 
-  const itinerarySnapshot = await getDocs(itineraryQuery)
+  const planSnapshot = await getDocs(planQuery)
 
-  const itinerary = itinerarySnapshot.docs.map((doc) => ({
+  const plan = planSnapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   }))[0]
 
   return {
-    itinerary,
+    plan,
   }
 }

@@ -10,12 +10,11 @@ import ChecklistsPage from '@pages/Checklists'
 import SigninPage from '@pages/Signin'
 import MyPage from '@pages/My'
 import DevPage from '@pages/Dev'
-import ChecklistEditFormPage from './pages/ChecklistEditForm'
-import ChecklistCreateFormPage from './pages/ChecklistCreateForm'
-import ItinerariesPage from './pages/Itineraries'
-import ItineraryCreateForm from './pages/ItineraryCreateForm'
-import ItineraryPage from './pages/Itinerary'
-import ItineraryCreateFormPage from './pages/ItineraryCreateForm'
+import ChecklistEditFormPage from '@pages/ChecklistEditForm'
+import ChecklistCreateFormPage from '@pages/ChecklistCreateForm'
+import PlanCreateFormPage from '@pages/PlanCreateForm'
+import PlansPage from '@pages/Plans'
+import PlanPage from '@pages/Plan'
 
 function App() {
   return (
@@ -57,26 +56,26 @@ function App() {
             }
           />
           <Route
-            path="/itineraries"
+            path="/plans"
             element={
               <AuthRoute>
-                <ItinerariesPage />
+                <PlansPage />
               </AuthRoute>
             }
           />
           <Route
-            path="/itinerary"
+            path="/plan"
             element={
               <AuthRoute>
-                <ItineraryPage />
+                <PlanPage />
               </AuthRoute>
             }
           />
           <Route
-            path="/itinerary/new"
+            path="/plan/new"
             element={
               <AuthRoute>
-                <ItineraryCreateFormPage />
+                <PlanCreateFormPage />
               </AuthRoute>
             }
           />

@@ -1,9 +1,9 @@
-import { getItineraries } from '@/remote/itinerary'
 import { useCallback } from 'react'
 import { useInfiniteQuery } from 'react-query'
+import { getPlans } from '@remote/plan'
 import useUser from '../auth/useUser'
 
-function useItineraries() {
+function usePlans() {
   const user = useUser()
 
   // 모든 여행계획 조회
@@ -13,9 +13,8 @@ function useItineraries() {
     fetchNextPage,
     isFetching,
   } = useInfiniteQuery(
-    ['itineraries', user?.uid],
-    ({ pageParam }) =>
-      getItineraries({ userId: user?.uid as string, pageParam }),
+    ['plans', user?.uid],
+    ({ pageParam }) => getPlans({ userId: user?.uid as string, pageParam }),
     {
       enabled: user != null,
       getNextPageParam: (snapshot) => {
@@ -32,14 +31,14 @@ function useItineraries() {
     fetchNextPage()
   }, [fetchNextPage, hasNextPage, isFetching])
 
-  const itineraries = data?.pages.map(({ itineraries }) => itineraries).flat()
+  const plans = data?.pages.map(({ plans }) => plans).flat()
 
   return {
-    itineraries,
+    plans,
     loadMore,
     isFetching,
     hasNextPage,
   }
 }
 
-export default useItineraries
+export default usePlans

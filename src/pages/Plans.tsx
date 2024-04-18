@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom'
 import styled from '@emotion/styled'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
-import { Itinerary } from '@models/itinerary'
-import ItineraryCard from '@components/itineraries/ItineraryCard'
+import { Plan } from '@models/plan'
+import PlanCard from '@components/plans/PlanCard'
+import usePlans from '@/hooks/plan/usePlans'
 
 import ContentsButtonBar from '@shared/ContentsButtonBar'
 import Flex from '@shared/Flex'
@@ -12,12 +13,9 @@ import Spacing from '@shared/Spacing'
 import Title from '@shared/Title'
 
 import { spacing } from '@styles/sharedStyles'
-import useItineraries from '@/hooks/itinerary/useItineraries'
 
-function ItinerariesPage() {
-  const { itineraries, hasNextPage, loadMore } = useItineraries()
-
-  console.log(itineraries)
+function PlansPage() {
+  const { plans, hasNextPage, loadMore } = usePlans()
 
   return (
     <Container>
@@ -28,7 +26,7 @@ function ItinerariesPage() {
 
       <Flex gap={4}>
         <ContentsButtonBar>
-          <Link to="/itinerary/new">새 여행일정 만들기</Link>
+          <Link to="/plan/new">새 여행일정 만들기</Link>
         </ContentsButtonBar>
       </Flex>
 
@@ -36,7 +34,7 @@ function ItinerariesPage() {
 
       <Flex dir="column">
         <InfiniteScroll
-          dataLength={itineraries?.length ?? 0}
+          dataLength={plans?.length ?? 0}
           hasMore={hasNextPage}
           loader={<></>}
           next={loadMore}
@@ -44,9 +42,9 @@ function ItinerariesPage() {
           style={{ overflowY: 'hidden' }}
         >
           <ul>
-            {itineraries?.map((itinerary: Itinerary) => (
-              <React.Fragment key={itinerary.id}>
-                <ItineraryCard itinerary={itinerary} />
+            {plans?.map((plan: Plan) => (
+              <React.Fragment key={plan.id}>
+                <PlanCard plan={plan} />
                 <Spacing size={spacing.contentsGap} />
               </React.Fragment>
             ))}
@@ -61,4 +59,4 @@ const Container = styled.div`
   height: calc(100vh - 81px);
 `
 
-export default ItinerariesPage
+export default PlansPage

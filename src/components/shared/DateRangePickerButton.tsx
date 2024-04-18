@@ -8,7 +8,7 @@ import { zIndex } from '@styles/sharedStyles'
 import DateRangePicker from '@shared/DateRangePicker'
 import Spacing from '@shared/Spacing'
 import Text from '@shared/Text'
-import { getDay, parseISO } from 'date-fns'
+import { getYoilOfDate } from '@/util/date'
 
 interface DateRangePickerButtonProps {
   startDate?: string
@@ -26,16 +26,6 @@ function DateRangePickerButton({
   onSelectDate,
 }: DateRangePickerButtonProps) {
   const [isCalendarOpen, setIsCalenderOpen] = useState(false)
-
-  function getYoilOfDate(dateString: string | undefined): string {
-    if (!dateString) return ''
-
-    const date = parseISO(dateString)
-    const dayOfWeek = getDay(date)
-    const 요일 = ['일', '월', '화', '수', '목', '금', '토'][dayOfWeek]
-
-    return 요일
-  }
 
   const buttonText =
     startDate && endDate
