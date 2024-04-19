@@ -79,14 +79,7 @@ function App() {
               </AuthRoute>
             }
           />
-          <Route
-            path="/signin"
-            element={
-              <AuthRoute>
-                <SigninPage />
-              </AuthRoute>
-            }
-          />
+          <Route path="/signin" element={<SigninPage />} />
           <Route
             path="/my"
             element={
