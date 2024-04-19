@@ -1,14 +1,9 @@
-import { colors } from '@/styles/colorPalette'
-import { spacing, zIndex } from '@/styles/sharedStyles'
-import { getYoilOfDate } from '@/util/date'
+import { useEffect, useMemo, useState } from 'react'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Tab, Tabs } from '@mui/material'
 import { addDays, format } from 'date-fns'
-import { useEffect, useMemo, useState } from 'react'
-import Flex from '../shared/Flex'
-import Spacing from '../shared/Spacing'
-import Text from '../shared/Text'
+
+import { Tab, Tabs } from '@mui/material'
 import {
   Timeline,
   TimelineConnector,
@@ -18,7 +13,20 @@ import {
   TimelineOppositeContent,
   TimelineSeparator,
 } from '@mui/lab'
+
 import { Plan, Activity } from '@models/plan'
+import { ITINERARY_TAGS } from '@constants'
+import { getYoilOfDate } from '@/util/date'
+import Flex from '@shared/Flex'
+import Spacing from '@shared/Spacing'
+import Text from '@shared/Text'
+import Tag from '@shared/Tag'
+import { AiOutlinePlus } from 'react-icons/ai'
+
+import { colors } from '@styles/colorPalette'
+import { spacing, zIndex } from '@styles/sharedStyles'
+
+const ACTION_BUTTONS = ['교통 추가', '할일 추가']
 
 interface ItinerarySectionProps {
   data: {
@@ -89,13 +97,41 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
 
     fetchItinerary()
 
-    // Cleanup function (optional)
     return () => {
       setLoading(false)
     }
   }, [plan, selectedDay])
 
-  console.log('itineraryOfTheDay : ', selectedDay, itineraryOfTheDay)
+  const tagComponent = (tags: string[]) => {
+    if (!tags || tags.length === 0) {
+      return null
+    }
+
+    return (
+      <Flex gap={10}>
+        {tags.map((tag) => {
+          const tagInfo = ITINERARY_TAGS[tag]
+
+          if (tagInfo) {
+            const { label, tagStyle } = tagInfo
+
+            return (
+              <Tag
+                key={tag}
+                color={tagStyle.fontColor}
+                backgroundColor={tagStyle.backgroundColor}
+                style={{ fontSize: '0.8rem' }}
+              >
+                {label}
+              </Tag>
+            )
+          }
+
+          return null
+        })}
+      </Flex>
+    )
+  }
 
   return (
     <Flex dir="column" gap={spacing.contentsGap}>
@@ -124,8 +160,6 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
         </Tabs>
       </TabsContainer>
 
-      <Spacing size={20} />
-
       {loading ? (
         <Text>Loading...</Text>
       ) : (
@@ -133,28 +167,51 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
           <Timeline>
             {itineraryOfTheDay?.map((activity: Activity, idx: number) => (
               <TimelineItem key={idx}>
-                {/* 시간 */}
-                {activity.time && (
-                  <TimelineOppositeContent>
-                    {activity.time}
-                  </TimelineOppositeContent>
-                )}
-                {/* 점 */}
+                <TimelineOppositeContent>
+                  {activity.time}
+                </TimelineOppositeContent>
+
                 <TimelineSeparator>
-                  <TimelineConnector />
+                  <TimelineConnector
+                    style={{ visibility: idx === 0 ? 'hidden' : 'visible' }}
+                  />
                   <TimelineDot />
-                  <TimelineConnector />
+                  <TimelineConnector
+                    style={{
+                      visibility:
+                        idx === itineraryOfTheDay.length - 1
+                          ? 'hidden'
+                          : 'visible',
+                    }}
+                  />
                 </TimelineSeparator>
-                {/* 액티비티 */}
+
                 <TimelineContent>
-                  <Text>{activity.activity}</Text>
-                  {activity.description && <Text>{activity.description}</Text>}
+                  <Flex dir="column">
+                    {tagComponent(activity.tag || [])}
+                    <Spacing size={8} />
+                    <Text fontWeight={500}>{activity.activity}</Text>
+                    {activity.description && (
+                      <Text typography="t6" color="gray500">
+                        {activity.description}
+                      </Text>
+                    )}
+                  </Flex>
                 </TimelineContent>
               </TimelineItem>
             ))}
           </Timeline>
         </TimelineContainer>
       )}
+
+      <Flex gap={15} align="center">
+        {ACTION_BUTTONS.map((section) => (
+          <ActionButton key={section} onClick={() => {}}>
+            <AiOutlinePlus />
+            {section}
+          </ActionButton>
+        ))}
+      </Flex>
     </Flex>
   )
 }
@@ -233,6 +290,7 @@ const TimelineContainer = styled.div`
   .MuiTimeline-root {
     margin: 0;
     padding: 0;
+    gap: 0;
   }
 
   .MuiTimelineItem-root {
@@ -242,31 +300,34 @@ const TimelineContainer = styled.div`
 
   .MuiTimelineOppositeContent-root {
     height: auto;
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    flex: 0.1;
-    color: ${colors.gray900};
+    flex: 0.07;
+    color: ${colors.gray800};
     font-size: 0.8rem;
   }
 
   .MuiTimelineDot-root {
-    margin: 4px 15px 4px 10px;
+    margin: 0 15px 0 5px;
     padding: 2px;
     background-color: ${colors.white};
     border: 8px solid ${colors.blue500};
     box-shadow: none;
     outline: none;
+    cursor: pointer;
   }
 
   .MuiTimelineConnector-root {
-    margin: 4px 15px 4px 10px;
+    margin: 0 15px 0 5px;
     background-color: ${colors.blue200};
   }
 
   .MuiTimelineContent-root {
     min-height: 80px;
     margin: 10px 0;
+    padding: 15px 0 15px 20px;
     display: flex;
     align-items: center;
     border: 1px solid ${colors.gray200};
@@ -275,6 +336,25 @@ const TimelineContainer = styled.div`
       0 1px 2px rgba(0, 0, 0, 0.03),
       0 1px 1px rgba(0, 0, 0, 0.1);
   }
+  cursor: pointer;
+`
+
+const ActionButton = styled.button`
+  height: 50px;
+  padding: 10px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex: 1;
+  background-color: ${colors.white};
+  border: 1px solid ${colors.gray300};
+  color: ${colors.gray900};
+  border-radius: 5px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.03),
+    0 1px 2px rgba(0, 0, 0, 0.07);
+  cursor: pointer;
 `
 
 export default ItinerarySection

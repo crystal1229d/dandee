@@ -10,13 +10,13 @@ import Flex from '@shared/Flex'
 import Spacing from '@shared/Spacing'
 import Title from '@shared/Title'
 import FixedBottomButton from '@shared/FixedBottomButton'
-import BasicInfoSection from '@/components/plan/BasicInfoSection'
+import BasicInfoSection from '@components/plan/BasicInfoSection'
+import ItinerarySection from '@components/plan/ItinerarySection'
+import ChecklistSection from '@components/plan/ChecklistSection'
+import ExpenseSection from '@components/plan/ExpenseSection'
 
 import { spacing } from '@styles/sharedStyles'
 import { colors } from '@styles/colorPalette'
-import ItinerarySection from '@/components/plan/ItinerarySection'
-import ExpenseSection from '@/components/plan/ExpenseSection'
-import ChecklistSection from '@/components/plan/ChecklistSection'
 
 const SECTIONS = ['기본정보', '여행일정', '체크리스트', '예산/경비']
 type Section = (typeof SECTIONS)[number]
@@ -40,8 +40,6 @@ function PlanPage() {
     data: Plan
     isLoading: boolean
   }
-
-  console.log(data, isLoading)
 
   const [selectedDate, setSelectedDate] = useState<{
     startDate?: string

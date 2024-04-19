@@ -36,3 +36,53 @@ export const TAGS = {
     },
   },
 }
+
+interface ItineraryTag {
+  label: string
+  tagStyle: {
+    fontColor: string
+    backgroundColor: string
+  }
+}
+
+interface ItineraryTags {
+  [key: string]: ItineraryTag
+}
+
+export const ITINERARY_TAGS: ItineraryTags = {
+  TODO: {
+    label: '할일',
+    tagStyle: {
+      fontColor: '#FFFFFF',
+      backgroundColor: '#808080',
+    },
+  },
+  ACCOMODATION: {
+    label: '🏠 숙소',
+    tagStyle: {
+      fontColor: '#FFFFFF',
+      backgroundColor: '#FF69B4',
+    },
+  },
+  CHECKLIST: {
+    label: '✅ 체크리스트',
+    tagStyle: {
+      fontColor: '#FFFFFF',
+      backgroundColor: '#9059CF',
+    },
+  },
+  FLIGHT: {
+    label: '✈️ 항공',
+    tagStyle: {
+      fontColor: '#FFFFFF',
+      backgroundColor: '#0494FC',
+    },
+  },
+  TRANSFER: {
+    label: '이동',
+    tagStyle: {
+      fontColor: '#FFFFFF',
+      backgroundColor: '#ACDCF4',
+    },
+  },
+}
