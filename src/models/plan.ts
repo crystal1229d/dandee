@@ -4,7 +4,7 @@ export interface Plan {
   departure_date?: string
   arrival_date?: string
   total_days?: number
-  type: 'CUSTOM_ITINERARY' | 'SHARE_ITINERARY'
+  type: 'DEFAULT_ITINERARY' | 'CUSTOM_ITINERARY' | 'SHARE_ITINERARY'
   link?: string
   creatorId: string
   joinedUsers?: string[]
@@ -38,7 +38,16 @@ export interface Activity {
   activity?: string
   description?: string
   images?: string[]
-  location: { directions: string; pointGeolocation: { x: number; y: number } }
+  location?: {
+    name: string
+    address: string
+    directions?: string
+    pointGeolocation: { x: number; y: number }
+  }
+  bookingInfo?: {
+    checkinDate?: string
+    checkoutDate?: string
+  }
 }
 
 export interface Expense {
