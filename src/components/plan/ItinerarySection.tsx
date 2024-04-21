@@ -24,7 +24,11 @@ import Tag from '@shared/Tag'
 import { AiOutlinePlus } from 'react-icons/ai'
 
 import { colors } from '@styles/colorPalette'
-import { spacing, zIndex } from '@styles/sharedStyles'
+import { zIndex } from '@styles/sharedStyles'
+import { IoMdPin } from 'react-icons/io'
+import { useModalContext } from '@/contexts/ModalContext'
+import TextField from '../shared/TextField'
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 
 const ACTION_BUTTONS = ['교통 추가', '할일 추가']
 
@@ -43,9 +47,72 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
   const [itineraryOfTheDay, setItineraryOfTheDay] = useState<Activity[] | null>(
     null,
   )
+  const { open } = useModalContext()
 
   const handleChangeDay = (event: React.SyntheticEvent, day: number) => {
     setSelectedDay(day)
+  }
+
+  const handleClickAddAcitivity = () => {
+    open({
+      title: '할일 추가',
+      contents: (
+        <Flex dir="column" style={{ height: '100%', padding: '20px 0' }}>
+          <TextField
+            required
+            id="time"
+            name="time"
+            defaultValue=""
+            label="시간"
+            placeholder="11:00"
+            onChange={() => {}}
+          />
+          <Spacing size={8} />
+          <Text typography="t7">태그</Text>
+          <Flex
+            style={{
+              border: `1px solid ${colors.gray900}`,
+              borderRadius: '7px',
+              padding: '12px',
+            }}
+          >
+            {tagComponent(Object.keys(ITINERARY_TAGS))}
+          </Flex>
+          <Spacing size={8} />
+          체크리스트 선택한 경우 : 체크리스트에서 특정 항목들 가져오기
+          (+바로가기 링크)
+          <Spacing size={8} />
+          경비/예산 선택한 경우 : 경비/예산에서 특정 항목들 가져오기 (+바로가기
+          링크)
+          <Spacing size={8} />
+          <TextField
+            required
+            id="activity"
+            name="activity"
+            defaultValue=""
+            label="할일"
+            placeholder=""
+            onChange={() => {}}
+          />
+          <Spacing size={8} />
+          <TextField
+            required
+            id="description"
+            name="description"
+            defaultValue=""
+            label="상세설명"
+            placeholder=""
+            onChange={() => {}}
+          />
+          <Spacing size={8} />
+          위치
+          {/* 사진 / 파일 / 링크 */}
+        </Flex>
+      ),
+      onConfirm: () => {
+        console.log('확인')
+      },
+    })
   }
 
   const { departure_date, arrival_date, total_days, plan } = data
@@ -102,6 +169,15 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
     }
   }, [plan, selectedDay])
 
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API as string,
+  })
+
+  if (isLoaded === false) {
+    return null
+  }
+
   const tagComponent = (tags: string[]) => {
     if (!tags || tags.length === 0) {
       return null
@@ -120,7 +196,7 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
                 key={tag}
                 color={tagStyle.fontColor}
                 backgroundColor={tagStyle.backgroundColor}
-                style={{ fontSize: '0.8rem' }}
+                style={{ fontSize: '0.8rem', cursor: 'pointer' }}
               >
                 {label}
               </Tag>
@@ -133,10 +209,55 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
     )
   }
 
-  return (
-    <Flex dir="column" gap={spacing.contentsGap}>
-      <Text>{total_days}일 일정</Text>
+  const renderMap = () => {
+    if (
+      !itineraryOfTheDay ||
+      !itineraryOfTheDay.some((activity) => activity.location)
+    ) {
+      return null
+    }
 
+    const firstActivityWithLocation = itineraryOfTheDay.find(
+      (activity) => activity.location?.pointGeolocation,
+    )
+
+    if (!firstActivityWithLocation) {
+      return null
+    }
+
+    const pointGeolocation =
+      firstActivityWithLocation.location?.pointGeolocation
+
+    if (!pointGeolocation) {
+      return null
+    }
+
+    const { x: lng, y: lat } = pointGeolocation
+
+    return (
+      <GoogleMap
+        mapContainerStyle={{
+          width: '100%',
+          height: '250px',
+          margin: '16px 0',
+          boxSizing: 'border-box',
+        }}
+        center={{ lat, lng }}
+        zoom={12}
+      >
+        {itineraryOfTheDay.map((activity, index) => {
+          const { location } = activity
+          if (!location) return null
+          const { x: lng, y: lat } = location.pointGeolocation
+          return <Marker key={index} position={{ lat, lng }} />
+        })}
+      </GoogleMap>
+    )
+  }
+
+  return (
+    <Flex dir="column">
+      <Text>{total_days}일 일정</Text>
       <TabsContainer>
         <Tabs
           value={selectedDay}
@@ -151,7 +272,7 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
               css={dayCardStyle}
               label={
                 <>
-                  <Text>{index + 1}일 일정</Text>
+                  <Text>{index + 1}일차</Text>
                   <Text css={dayCardDateStyle}>{day}</Text>
                 </>
               }
@@ -159,6 +280,8 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
           ))}
         </Tabs>
       </TabsContainer>
+
+      {renderMap()}
 
       {loading ? (
         <Text>Loading...</Text>
@@ -187,14 +310,34 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
                 </TimelineSeparator>
 
                 <TimelineContent>
-                  <Flex dir="column">
+                  <Flex dir="column" style={{ width: '100%' }}>
                     {tagComponent(activity.tag || [])}
                     <Spacing size={8} />
-                    <Text fontWeight={500}>{activity.activity}</Text>
+                    <Text typography="t4" fontWeight={500}>
+                      {activity.activity}
+                    </Text>
                     {activity.description && (
                       <Text typography="t6" color="gray500">
                         {activity.description}
                       </Text>
+                    )}
+                    {activity.location && (
+                      <>
+                        <Spacing size={8} />
+                        <Flex
+                          align="center"
+                          gap={3}
+                          style={{
+                            borderTop: `1px solid ${colors.gray200}`,
+                            paddingTop: '10px',
+                          }}
+                        >
+                          <IoMdPin color={colors.gray600} />
+                          <Text typography="t7" color="gray600">
+                            {`${activity.location.name} | ${activity.location.address}`}
+                          </Text>
+                        </Flex>
+                      </>
                     )}
                   </Flex>
                 </TimelineContent>
@@ -204,9 +347,11 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
         </TimelineContainer>
       )}
 
+      <Spacing size={10} />
+
       <Flex gap={15} align="center">
         {ACTION_BUTTONS.map((section) => (
-          <ActionButton key={section} onClick={() => {}}>
+          <ActionButton key={section} onClick={handleClickAddAcitivity}>
             <AiOutlinePlus />
             {section}
           </ActionButton>
@@ -327,7 +472,7 @@ const TimelineContainer = styled.div`
   .MuiTimelineContent-root {
     min-height: 80px;
     margin: 10px 0;
-    padding: 15px 0 15px 20px;
+    padding: 15px 20px 15px 20px;
     display: flex;
     align-items: center;
     border: 1px solid ${colors.gray200};

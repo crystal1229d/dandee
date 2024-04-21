@@ -40,7 +40,9 @@ function DateRangePickerButton({
     <>
       <CalendarButton onClick={() => setIsCalenderOpen((prev) => !prev)}>
         <IoCalendarOutline css={iconStyles} />
-        <Text bold>{buttonText}</Text>
+        <Text typography="t6" fontWeight={600}>
+          {buttonText}
+        </Text>
       </CalendarButton>
 
       {isCalendarOpen && (

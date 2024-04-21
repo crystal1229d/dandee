@@ -6,6 +6,8 @@ import useGoogleSignin from '@hooks/auth/useGoogleSignin'
 import useUser from '@hooks/auth/useUser'
 
 import Flex from '@shared/Flex'
+import Avatar from '@shared/Avatar'
+
 import { colors } from '@styles/colorPalette'
 import { spacing, zIndex } from '@/styles/sharedStyles'
 
@@ -45,16 +47,7 @@ function Navbar() {
         )}
         {user && (
           <Link to="/my">
-            <img
-              src={
-                user.photoURL ??
-                'https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-128.png'
-              }
-              alt="유저의 이미지"
-              width={40}
-              height={40}
-              style={{ borderRadius: '100%' }}
-            />
+            <Avatar user={user} />
           </Link>
         )}
       </Flex>

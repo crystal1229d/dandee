@@ -50,13 +50,6 @@ interface ItineraryTags {
 }
 
 export const ITINERARY_TAGS: ItineraryTags = {
-  TODO: {
-    label: '할일',
-    tagStyle: {
-      fontColor: '#FFFFFF',
-      backgroundColor: '#808080',
-    },
-  },
   ACCOMODATION: {
     label: '🏠 숙소',
     tagStyle: {
@@ -64,11 +57,32 @@ export const ITINERARY_TAGS: ItineraryTags = {
       backgroundColor: '#FF69B4',
     },
   },
+  TODO: {
+    label: '🍽️ 맛집',
+    tagStyle: {
+      fontColor: '#FFFFFF',
+      backgroundColor: '#8C7CDC',
+    },
+  },
+  SPOT: {
+    label: '🗺️ 명소',
+    tagStyle: {
+      fontColor: '#FFFFFF',
+      backgroundColor: '#3CA4EC',
+    },
+  },
   CHECKLIST: {
     label: '✅ 체크리스트',
     tagStyle: {
       fontColor: '#FFFFFF',
-      backgroundColor: '#9059CF',
+      backgroundColor: '#54AC1C',
+    },
+  },
+  EXPENSE: {
+    label: '💰 예산/경비',
+    tagStyle: {
+      fontColor: '#FFFFFF',
+      backgroundColor: '#F5D613',
     },
   },
   FLIGHT: {
@@ -82,7 +96,7 @@ export const ITINERARY_TAGS: ItineraryTags = {
     label: '이동',
     tagStyle: {
       fontColor: '#FFFFFF',
-      backgroundColor: '#ACDCF4',
+      backgroundColor: '#808080',
     },
   },
 }

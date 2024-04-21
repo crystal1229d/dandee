@@ -4,6 +4,7 @@ export interface Plan {
   departure_date?: string
   arrival_date?: string
   total_days?: number
+  headcount?: number
   type: 'DEFAULT_ITINERARY' | 'CUSTOM_ITINERARY' | 'SHARE_ITINERARY'
   link?: string
   creatorId: string

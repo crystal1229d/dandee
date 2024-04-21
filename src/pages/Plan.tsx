@@ -9,7 +9,6 @@ import { Plan } from '@models/plan'
 import Flex from '@shared/Flex'
 import Spacing from '@shared/Spacing'
 import Title from '@shared/Title'
-import FixedBottomButton from '@shared/FixedBottomButton'
 import BasicInfoSection from '@components/plan/BasicInfoSection'
 import ItinerarySection from '@components/plan/ItinerarySection'
 import ChecklistSection from '@components/plan/ChecklistSection'
@@ -37,7 +36,7 @@ function PlanPage() {
   const [selectedSection, setSelectedSection] = useState<Section>(SECTIONS[0])
 
   const { data, isLoading } = usePlan({ planId }) as {
-    data: Plan
+    data: Partial<Plan>
     isLoading: boolean
   }
 
@@ -51,10 +50,6 @@ function PlanPage() {
     nights: data?.total_days || 0,
   })
 
-  const handleFormSubmit = async () => {
-    alert('저장되었습니다')
-  }
-
   if (isLoading) {
     return <div>Loading...</div>
   }
@@ -65,6 +60,7 @@ function PlanPage() {
         return (
           <BasicInfoSection
             data={data}
+            planId={planId}
             selectedDate={selectedDate}
             onDateSelect={(dateRange) =>
               setSelectedDate({
@@ -112,12 +108,6 @@ function PlanPage() {
       <Flex dir="column" gap={6} style={{ padding: '0 24px' }}>
         {renderSectionContent()}
       </Flex>
-
-      <FixedBottomButton
-        label="저장하기"
-        disabled={false}
-        onClick={handleFormSubmit}
-      />
     </div>
   )
 }
