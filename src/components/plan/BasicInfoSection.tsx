@@ -39,7 +39,8 @@ function BasicInfoSection({
   selectedDate,
   onDateSelect,
 }: BasicInfoSectionProps) {
-  const joinedMembers: Partial<User>[] = [] // data.joinedUsers
+  const joinedMembers: User[] | undefined = data.joinedUserInfo
+  console.log(data.joinedUserInfo)
 
   const { update } = usePlan({ planId })
 

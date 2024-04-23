@@ -16,6 +16,7 @@ import {
 import { COLLECTIONS } from '@constants'
 import { db } from '@lib/firebase'
 import { Plan } from '@/models/plan'
+import { User } from '@/models/user'
 
 // 여행일정 전체 목록 조회
 // @TODO: 공유받은 여행일정도 조회
@@ -31,14 +32,14 @@ export async function getPlans({
       ? query(
           collection(db, COLLECTIONS.PLAN),
           where('creatorId', '==', userId),
-          // where('joinedUsers', 'array-contains', userId),
+          // where('joinedUserId', 'array-contains', userId),
           orderBy('departure_date', 'desc'),
           limit(4),
         )
       : query(
           collection(db, COLLECTIONS.PLAN),
           where('creatorId', '==', userId),
-          // where('joinedUsers', 'array-contains', userId),
+          // where('joinedUserId', 'array-contains', userId),
           orderBy('departure_date', 'desc'),
           startAfter(pageParam),
           limit(4),
@@ -70,23 +71,56 @@ export async function getPlan({
 }: {
   planId: string
   userId: string
-}) {
+}): Promise<{ plan: Partial<Plan> }> {
   const planQuery = query(
     collection(db, COLLECTIONS.PLAN),
     where('id', '==', planId),
-    // where('joinedUsers', 'array-contains', userId),
+    // where('joinedUserId', 'array-contains', userId),
     where('creatorId', '==', userId),
   )
 
   const planSnapshot = await getDocs(planQuery)
 
+  if (planSnapshot.empty) {
+    throw new Error('해당하는 여행계획을 찾을 수 없습니다.')
+  }
+
   const plan = planSnapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
-  }))[0]
+  }))[0] as Plan
+
+  if (!plan) {
+    throw new Error('해당하는 여행계획을 찾을 수 없습니다.')
+  }
+
+  // 참여한 모든 유저(생성자, 참여자) 정보 조회
+  const userIds = [plan.creatorId]
+  if (plan.joinedUserId && plan.joinedUserId.length > 0) {
+    userIds.push(...plan.joinedUserId)
+  }
+
+  const userQuery = query(
+    collection(db, COLLECTIONS.USER),
+    where('uid', 'in', userIds),
+  )
+  const userSnapshot = await getDocs(userQuery)
+  const usersMap: Record<string, User> = {}
+
+  if (userSnapshot && !userSnapshot.empty) {
+    userSnapshot.docs.forEach((userDoc) => {
+      const userData = userDoc.data() as User
+      usersMap[userData.uid] = userData
+    })
+  }
+
+  const updatedPlan: Plan = {
+    ...plan,
+    joinedUserInfo: userIds.map((uid) => usersMap[uid] || null),
+  }
 
   return {
-    plan,
+    plan: updatedPlan,
   }
 }
 

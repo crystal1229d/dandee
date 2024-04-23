@@ -1,3 +1,5 @@
+import { User } from './user'
+
 export interface Plan {
   id: string
   name: string
@@ -8,7 +10,8 @@ export interface Plan {
   type: 'DEFAULT_ITINERARY' | 'CUSTOM_ITINERARY' | 'SHARE_ITINERARY'
   link?: string
   creatorId: string
-  joinedUsers?: string[]
+  joinedUserId?: string[]
+  joinedUserInfo: User[]
   createdAt: string
 
   plan?: Plan

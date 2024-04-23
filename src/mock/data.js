@@ -321,7 +321,8 @@ export const PLAN = [
     headcount: 1,
     link: null,
     creatorId: 'r1TAHIKorqPVhXAfoJRjuwC2FD33',
-    joinedUsers: [],
+    joinedUserId: [],
+    joinedUserInfo: [],
     createdAt: '2023-03-23T00:00:00+09:00',
 
     plan: {
@@ -379,7 +380,8 @@ export const PLAN = [
     headcount: 2,
     link: null,
     creatorId: 'r1TAHIKorqPVhXAfoJRjuwC2FD33',
-    joinedUsers: [],
+    joinedUserId: [],
+    joinedUserInfo: [],
     createdAt: '2023-04-10T00:00:00+09:00',
 
     plan: null,
@@ -396,7 +398,8 @@ export const PLAN = [
     headcount: 4,
     link: null,
     creatorId: 'r1TAHIKorqPVhXAfoJRjuwC2FD33',
-    joinedUsers: [],
+    joinedUserId: [],
+    joinedUserInfo: [],
     createdAt: '2023-06-10T00:00:00+09:00',
 
     plan: null,

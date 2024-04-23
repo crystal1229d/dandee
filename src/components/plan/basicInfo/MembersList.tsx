@@ -5,7 +5,7 @@ import { User } from '@/models/user'
 import Avatar from '@/components/shared/Avatar'
 
 interface MembersListProps {
-  users: Partial<User>[] | []
+  users: Partial<User>[] | undefined
 }
 
 function MembersList({ users }: MembersListProps) {
