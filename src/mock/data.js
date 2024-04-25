@@ -351,8 +351,8 @@ export const PLAN = [
               activity: '호텔 체크인',
               location: {
                 pointGeolocation: {
-                  x: -33.86254912058062,
-                  y: 151.21000182463402,
+                  lng: 151.20945,
+                  lat: -33.86267,
                 },
                 name: '시드니 하버 메리어트 호텔 앳 서큘러 키',
                 address: '30 Pitt St, Sydney NSW 2000 오스트레일리아',

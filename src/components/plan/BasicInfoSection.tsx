@@ -40,7 +40,6 @@ function BasicInfoSection({
   onDateSelect,
 }: BasicInfoSectionProps) {
   const joinedMembers: User[] | undefined = data.joinedUserInfo
-  console.log(data.joinedUserInfo)
 
   const { update } = usePlan({ planId })
 

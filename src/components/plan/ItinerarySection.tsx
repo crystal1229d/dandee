@@ -17,18 +17,20 @@ import {
 import { Plan, Activity } from '@models/plan'
 import { ITINERARY_TAGS } from '@constants'
 import { getYoilOfDate } from '@/util/date'
+import { useModalContext } from '@contexts/ModalContext'
+
 import Flex from '@shared/Flex'
 import Spacing from '@shared/Spacing'
 import Text from '@shared/Text'
 import Tag from '@shared/Tag'
+import TextField from '@shared/TextField'
+import Map from '@shared/Map'
 import { AiOutlinePlus } from 'react-icons/ai'
+import { IoMdPin } from 'react-icons/io'
 
 import { colors } from '@styles/colorPalette'
 import { zIndex } from '@styles/sharedStyles'
-import { IoMdPin } from 'react-icons/io'
-import { useModalContext } from '@/contexts/ModalContext'
-import TextField from '../shared/TextField'
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
+import SearchLocation from '../shared/SearchLocation'
 
 const ACTION_BUTTONS = ['교통 추가', '할일 추가']
 
@@ -91,21 +93,29 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
             name="activity"
             defaultValue=""
             label="할일"
-            placeholder=""
+            placeholder="브런치 먹기"
             onChange={() => {}}
           />
           <Spacing size={8} />
           <TextField
-            required
             id="description"
             name="description"
             defaultValue=""
             label="상세설명"
+            placeholder="커피와 토스트"
+            onChange={() => {}}
+          />
+          <Spacing size={8} />
+          <TextField
+            id="location"
+            name="location"
+            defaultValue=""
+            label="위치"
             placeholder=""
             onChange={() => {}}
           />
           <Spacing size={8} />
-          위치
+          <SearchLocation />
           {/* 사진 / 파일 / 링크 */}
         </Flex>
       ),
@@ -169,15 +179,6 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
     }
   }, [plan, selectedDay])
 
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API as string,
-  })
-
-  if (isLoaded === false) {
-    return null
-  }
-
   const tagComponent = (tags: string[]) => {
     if (!tags || tags.length === 0) {
       return null
@@ -232,27 +233,18 @@ function ItinerarySection({ data }: ItinerarySectionProps) {
       return null
     }
 
-    const { x: lng, y: lat } = pointGeolocation
+    const { lng, lat } = pointGeolocation
 
-    return (
-      <GoogleMap
-        mapContainerStyle={{
-          width: '100%',
-          height: '250px',
-          margin: '16px 0',
-          boxSizing: 'border-box',
-        }}
-        center={{ lat, lng }}
-        zoom={12}
-      >
-        {itineraryOfTheDay.map((activity, index) => {
-          const { location } = activity
-          if (!location) return null
-          const { x: lng, y: lat } = location.pointGeolocation
-          return <Marker key={index} position={{ lat, lng }} />
-        })}
-      </GoogleMap>
-    )
+    const markers = itineraryOfTheDay
+      ?.map((activity) => {
+        const { location } = activity
+        if (!location) return null
+        const { lng, lat } = location.pointGeolocation
+        return { lat, lng }
+      })
+      .filter((marker) => marker !== null) as google.maps.LatLngLiteral[]
+
+    return <Map center={{ lat, lng }} zoom={15} markers={markers} />
   }
 
   return (

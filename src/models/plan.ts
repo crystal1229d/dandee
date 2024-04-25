@@ -46,7 +46,7 @@ export interface Activity {
     name: string
     address: string
     directions?: string
-    pointGeolocation: { x: number; y: number }
+    pointGeolocation: { lng: number; lat: number }
   }
   bookingInfo?: {
     checkinDate?: string

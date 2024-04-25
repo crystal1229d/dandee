@@ -11,7 +11,7 @@ interface MembersListProps {
 function MembersList({ users }: MembersListProps) {
   return (
     <ListContainer>
-      {users && users.map((user) => <Avatar user={user} />)}
+      {users && users.map((user) => <Avatar key={user.uid} user={user} />)}
     </ListContainer>
   )
 }

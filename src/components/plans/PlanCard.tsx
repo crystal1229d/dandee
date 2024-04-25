@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { css } from '@emotion/react'
 import qs from 'qs'
-import { differenceInDays, format, isPast } from 'date-fns'
+import { differenceInDays, format, isPast, isSameDay } from 'date-fns'
 
 import { Plan } from '@models/plan'
 import { useDialogContext } from '@contexts/DialogContext'
@@ -39,8 +39,17 @@ function PlanCard({ plan }: { plan: Plan }) {
 
     const 출발일 = new Date(departure_date)
     const 도착일 = new Date(arrival_date)
+    const 오늘 = new Date()
 
-    if (isPast(출발일) && 도착일 > new Date()) {
+    if (isSameDay(출발일, 오늘)) {
+      return (
+        <Tag color={colors.white} backgroundColor={colors.blue}>
+          여행당일
+        </Tag>
+      )
+    }
+
+    if (isPast(출발일) && 도착일 > 오늘) {
       const 여행일수 = differenceInDays(new Date(), 출발일)
       return (
         <Tag color={colors.white} backgroundColor={colors.blue}>
@@ -50,11 +59,10 @@ function PlanCard({ plan }: { plan: Plan }) {
     }
 
     if (isPast(출발일)) {
-      return null // 출발일이 과거이고 이미 도착한 경우에는 아무것도 반환하지 않음
+      return null
     }
 
-    const today = new Date()
-    const 디데이 = differenceInDays(출발일, today)
+    const 디데이 = differenceInDays(출발일, 오늘)
 
     return (
       <Tag color={colors.white} backgroundColor={colors.red}>
